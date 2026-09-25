@@ -1,0 +1,19 @@
+{
+  "name": "HAKI AI — Legal Information & Documents (Kenya)",
+  "short_name": "HAKI AI",
+  "description": "Legal information and document generation for Kenya. Not a substitute for a licensed advocate.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f8f9",
+  "theme_color": "#e5342b",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/logo-icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

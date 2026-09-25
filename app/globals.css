@@ -1,0 +1,127 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Palette and design tokens adjusted to match the provided layout */
+:root {
+  --radius: 1rem;
+  --background: #f7f8f9; /* page background */
+  --card: #ffffff; /* card background */
+  --foreground: #1f2a37; /* primary text */
+  --muted-foreground: #6b7280;
+  --primary: #e5342b; /* haki red primary */
+  --primary-foreground: #ffffff;
+  --secondary: #f8fafb;
+  --accent: #fdeceb;
+  --border: #e6e8ec; /* subtle card border */
+  --input: #e9eaee;
+  --ring: rgba(229,52,43,0.25);
+  --destructive: #dc2626;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Tighter default heading/paragraph spacing to match design */
+  h1, h2, h3, h4, h5 {
+    color: var(--foreground);
+  }
+
+  /* Button adjustments via CSS variables (used by components) */
+  .btn-primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+/* card / hero tweaks */
+.hero-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(15,23,32,0.08);
+}
+
+.hero-cta-primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 0 6px 18px rgba(229,52,43,0.25);
+}
+
+.hero-cta-outline {
+  background: transparent;
+  border: 1px solid rgba(15,23,32,0.06);
+  color: rgba(15,23,32,0.75);
+}
+
+/* hero image styling */
+.hero-image {
+  transform: translateZ(0);
+  filter: saturate(0.95) contrast(0.98);
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  box-shadow: -8px 12px 40px rgba(15,23,32,0.06);
+}
+}
+
+/* ===== Gradient theme ===== */
+
+/* Soft warm glow background for the hero */
+.gradient-hero-bg {
+  background-image:
+    radial-gradient(1100px 540px at 50% -90px, rgba(229,52,43,0.16), transparent 70%),
+    radial-gradient(800px 460px at 86% 8%, rgba(255,138,0,0.10), transparent 65%),
+    radial-gradient(760px 520px at 6% 35%, rgba(217,35,28,0.07), transparent 60%),
+    linear-gradient(180deg, #fdfbfb 0%, #f7f8f9 55%, #f4f5f7 100%);
+}
+
+/* Primary call-to-action: coral → crimson gradient */
+.btn-gradient-primary {
+  background-image: linear-gradient(135deg, #ff5b4a 0%, #e5342b 48%, #c0221b 100%);
+  color: #ffffff;
+  box-shadow: 0 14px 30px -10px rgba(229,52,43,0.55);
+  transition: box-shadow 0.2s ease, filter 0.2s ease;
+}
+.btn-gradient-primary:hover {
+  filter: brightness(1.07);
+  box-shadow: 0 18px 36px -10px rgba(229,52,43,0.65);
+}
+
+/* Gradient brand text (logo) */
+.text-gradient-brand {
+  background-image: linear-gradient(120deg, #ff5b4a 0%, #e5342b 55%, #c0221b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Small gradient pill (Generate button in mockup) */
+.chip-gradient {
+  background-image: linear-gradient(135deg, #ff5b4a 0%, #d9231c 100%);
+  color: #ffffff;
+}
+
+/* Cards: white → warm tint gradient */
+.card-gradient {
+  background-image: linear-gradient(160deg, #ffffff 0%, #fff8f7 55%, #ffefed 100%);
+  border-color: rgba(229,52,43,0.12);
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+.card-gradient:hover {
+  border-color: rgba(229,52,43,0.28);
+  box-shadow: 0 18px 40px -18px rgba(229,52,43,0.40);
+  transform: translateY(-2px);
+}
+
+/* Card icon tile: soft red gradient */
+.icon-gradient {
+  background-image: linear-gradient(135deg, #ffe9e6 0%, #ffd2cc 100%);
+  border-color: rgba(229,52,43,0.14);
+  color: #d9231c;
+}
