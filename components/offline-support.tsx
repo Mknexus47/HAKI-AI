@@ -27,9 +27,10 @@ export function OfflineSupport() {
   const { t } = useLanguage();
 
   React.useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => undefined);
-    }
+    // Disabled for debugging:
+    // if ("serviceWorker" in navigator) {
+    //   navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+    // }
   }, []);
 
   if (online) return null;
