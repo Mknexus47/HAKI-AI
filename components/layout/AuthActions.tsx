@@ -77,7 +77,7 @@ export default function AuthActions({ stacked = false }: AuthActionsProps) {
       >
         <Link href="/login">{t("auth.login")}</Link>
       </Button>
-      <Button asChild className={buttonClassName}>
+      <Button asChild className={`btn-gradient-primary ${buttonClassName}`}>
         <Link href="/signup">{t("auth.signup")}</Link>
       </Button>
     </div>

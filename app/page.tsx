@@ -100,7 +100,7 @@ function AppMockup() {
                 className="flex items-center gap-2 rounded-md px-1.5 py-1.5 text-[10px] text-slate-400 hover:bg-white/5"
               >
                 <span
-                  className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#e5342b]/15 text-[8px] font-semibold text-[#e5342b]"
+                  className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#c9a227]/15 text-[8px] font-semibold text-[#c9a227]"
                   aria-hidden="true"
                 >
                   <Scale className="h-2.5 w-2.5" />
@@ -123,7 +123,7 @@ function AppMockup() {
               <Plus className="h-3.5 w-3.5 text-slate-600" aria-hidden="true" />
             </div>
             <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-200">
-              <TreeDeciduous className="h-3.5 w-3.5 text-[#e5342b]" aria-hidden="true" />
+              <TreeDeciduous className="h-3.5 w-3.5 text-[#c9a227]" aria-hidden="true" />
               <span className="tracking-wide">HAKI AI</span>
             </div>
             <div className="flex items-center gap-2.5 text-slate-500">
@@ -154,8 +154,8 @@ function AppMockup() {
               ))}
               <li className="flex items-center justify-between rounded-md bg-white/5 px-2.5 py-1.5">
                 <span className="flex items-center gap-2">
-                  <span className="grid h-4 w-4 place-items-center rounded-full bg-[#e5342b]/15" aria-hidden="true">
-                    <TreeDeciduous className="h-3 w-3 text-[#e5342b]" />
+                  <span className="grid h-4 w-4 place-items-center rounded-full bg-[#c9a227]/15" aria-hidden="true">
+                    <TreeDeciduous className="h-3 w-3 text-[#c9a227]" />
                   </span>
                   Haki
                 </span>
@@ -169,7 +169,7 @@ function AppMockup() {
               </div>
               <div className="mt-1.5 flex items-center justify-between rounded-md border border-white/10 px-2 py-1.5 text-[10px] text-slate-300">
                 <span className="flex items-center gap-2">
-                  <TreeDeciduous className="h-3 w-3 text-[#e5342b]" aria-hidden="true" />
+                  <TreeDeciduous className="h-3 w-3 text-[#c9a227]" aria-hidden="true" />
                   haki-assistant
                 </span>
                 <CheckCircle2 className="h-3 w-3 text-emerald-400" aria-hidden="true" />
@@ -183,7 +183,7 @@ function AppMockup() {
               What are my rights as a tenant?
             </div>
             <div className="space-y-2">
-              <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#e5342b]">
+              <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#c9a227]">
                 <TreeDeciduous className="h-3 w-3" aria-hidden="true" />
                 HAKI AI
               </p>
@@ -206,7 +206,7 @@ function AppMockup() {
               </ol>
               <div className="flex items-center justify-between gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-2">
                 <span className="flex items-center gap-2 text-slate-300">
-                  <FileText className="h-3.5 w-3.5 text-[#e5342b]" aria-hidden="true" />
+                  <FileText className="h-3.5 w-3.5 text-[#c9a227]" aria-hidden="true" />
                   Suggested document: Rent acknowledgement letter
                 </span>
                 <span className="chip-gradient rounded-full px-2.5 py-1 text-[9px] font-semibold">
