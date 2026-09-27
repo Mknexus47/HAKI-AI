@@ -11,16 +11,63 @@ const labelClassName = "mb-1.5 block text-sm font-medium text-slate-700";
 
 export default function ContactPage() {
   const [sent, setSent] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [needsActivation, setNeedsActivation] = React.useState(false);
+  const [sending, setSending] = React.useState(false);
   const [form, setForm] = React.useState({
     name: "",
     email: "",
     message: "",
   });
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSent(true);
-    setForm({ name: "", email: "", message: "" });
+    setError(null);
+    setNeedsActivation(false);
+    setSending(true);
+
+    try {
+      const response = await fetch(
+        "https://formsubmit.co/ajax/michaelkariuki281@gmail.com",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            _subject: `HAKI AI contact — ${form.name}`,
+            name: form.name,
+            email: form.email,
+            message: form.message,
+          }),
+        }
+      );
+
+      const data: { success?: boolean | string; message?: string } | null =
+        await response.json().catch(() => null);
+      setSending(false);
+
+      if (!response.ok || !data?.success) {
+        setError(
+          "We could not send your message. Please email michaelkariuki281@gmail.com directly."
+        );
+        return;
+      }
+
+      const message = String(data.message ?? "").toLowerCase();
+      if (message.includes("confirm") || message.includes("activate")) {
+        setNeedsActivation(true);
+      }
+
+      setSent(true);
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      setSending(false);
+      setError(
+        "We could not send your message. Please email michaelkariuki281@gmail.com directly."
+      );
+    }
   };
 
   return (
@@ -39,10 +86,25 @@ export default function ContactPage() {
             <h2 className="mb-6 text-lg font-semibold text-slate-900">
               Send a message
             </h2>
+            {error ? (
+              <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+                {error}
+              </p>
+            ) : null}
             {sent ? (
-              <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-                Thank you — your message has been recorded. Our support team
-                will respond by email.
+              <p className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                {needsActivation ? (
+                  <>
+                    One more step: we sent a confirmation email to
+                    michaelkariuki281@gmail.com. Open it and click the activation
+                    link — your message will be delivered from then on.
+                  </>
+                ) : (
+                  <>
+                    Thank you — your message has been sent. Our support team
+                    will respond by email.
+                  </>
+                )}
               </p>
             ) : null}
             <form onSubmit={handleSubmit} className="mt-4 space-y-5">
@@ -93,10 +155,11 @@ export default function ContactPage() {
               </div>
               <Button
                 type="submit"
+                disabled={sending}
                 className="btn-gradient-primary h-[48px] rounded-full px-8 text-[15px] font-semibold"
               >
                 <Send className="h-4 w-4" aria-hidden="true" />
-                Send message
+                {sending ? "Sending..." : "Send message"}
               </Button>
             </form>
           </div>
@@ -110,7 +173,7 @@ export default function ContactPage() {
             <ul className="space-y-4 text-sm text-slate-600">
               <li className="flex items-center gap-3">
                 <Mail className="h-4 w-4 shrink-0 text-slate-400" aria-hidden="true" />
-                support@haki-ai.co.ke
+                michaelkariuki281@gmail.com
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 shrink-0 text-slate-400" aria-hidden="true" />

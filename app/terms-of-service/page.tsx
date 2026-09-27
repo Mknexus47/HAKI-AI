@@ -31,7 +31,7 @@ const sections = [
   },
   {
     title: "8. Contact",
-    body: "Questions about these terms can be sent to support@haki-ai.co.ke.",
+    body: "Questions about these terms can be sent to michaelkariuki281@gmail.com.",
   },
 ];
 

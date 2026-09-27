@@ -23,7 +23,7 @@ const sections = [
   },
   {
     title: "6. Your rights",
-    body: "You may request access to, correction of, or deletion of your personal data by contacting support@haki-ai.co.ke.",
+    body: "You may request access to, correction of, or deletion of your personal data by contacting michaelkariuki281@gmail.com.",
   },
   {
     title: "7. Cookies",
@@ -31,7 +31,7 @@ const sections = [
   },
   {
     title: "8. Changes and contact",
-    body: "We may update this policy from time to time. Questions about privacy can be sent to support@haki-ai.co.ke.",
+    body: "We may update this policy from time to time. Questions about privacy can be sent to michaelkariuki281@gmail.com.",
   },
 ];
 

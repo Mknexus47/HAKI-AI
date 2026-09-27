@@ -74,8 +74,9 @@ export default function AskPage() {
   const [greeting, setGreeting] = React.useState("");
 
   React.useEffect(() => {
-    setMessages([{ role: "assistant", text: t("ask.greeting") }]);
-    setGreeting(t("ask.greeting"));
+    const welcome = `${t("ask.greeting")}\n\n${t("scope.limitation")}`;
+    setMessages([{ role: "assistant", text: welcome }]);
+    setGreeting(welcome);
   }, [t]);
 
   const handleSend = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -151,7 +152,7 @@ export default function AskPage() {
                   <TreeDeciduous className="h-3.5 w-3.5" aria-hidden="true" />
                   HAKI AI
                 </p>
-                <div className="rounded-lg rounded-tl-sm border border-slate-200 bg-white px-4 py-3 text-sm leading-relaxed text-slate-700">
+                <div className="whitespace-pre-line rounded-lg rounded-tl-sm border border-slate-200 bg-white px-4 py-3 text-sm leading-relaxed text-slate-700">
                   {message.text}
                   {message.offerHelp ? (
                     <p className="mt-2">

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { WifiOff } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 
@@ -31,7 +32,44 @@ export function OfflineSupport() {
     // if ("serviceWorker" in navigator) {
     //   navigator.serviceWorker.register("/sw.js").catch(() => undefined);
     // }
+
+    // Clean up any previously registered service worker and its caches so
+    // stale CSS/JS can no longer be served after a deploy.
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((registrations) =>
+          registrations.forEach((registration) => registration.unregister())
+        )
+        .catch(() => undefined);
+    }
+    if (typeof window !== "undefined" && "caches" in window) {
+      caches
+        .keys()
+        .then((keys) =>
+          Promise.all(
+            keys
+              .filter((key) => key.startsWith("haki-ai"))
+              .map((key) => caches.delete(key))
+          )
+        )
+        .catch(() => undefined);
+    }
   }, []);
+
+  // Password recovery links sometimes fall back to the Site URL (homepage)
+  // when Supabase rejects the redirect target — forward them to the form.
+  const router = useRouter();
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const isRecovery =
+      window.location.pathname === "/" &&
+      (params.has("code") ||
+        window.location.hash.includes("access_token"));
+    if (isRecovery) {
+      router.replace("/auth/reset-password");
+    }
+  }, [router]);
 
   if (online) return null;
 

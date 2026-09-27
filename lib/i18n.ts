@@ -19,6 +19,8 @@ const en = {
     "⚠️ Important: HAKI AI provides general legal information only. It does not provide legal advice or create a lawyer-client relationship. For serious matters, please consult a licensed Advocate of the High Court of Kenya.",
   "disclaimer.sw":
     "⚠️ Muhimu: HAKI AI hutoa taarifa za kisheria kwa ujumla tu. Haiutoi ushauri wa kisheria wala kuunda uhusiano wa mawakili. Kwa masuala mazito, tafadhali wasiliana na Advocate wa Mahakama Kuu ya Kenya aliyeidhinishwa.",
+  "scope.limitation":
+    "⚠️ SCOPE LIMITATION: HAKI AI provides general information on five specific legal rights areas only: Tenant Rights, Employment, Consumer Protection, Debt Recovery, and Business Agreements. It does not cover criminal law, family disputes, immigration, land ownership, constitutional petitions, or any other legal matter. This is not legal advice. For issues outside these areas, please consult a qualified advocate or use our Legal Aid Directory.",
   "hero.title": "Access to Justice, Simplified.",
   "hero.subtitle":
     "Your cloud-powered legal information assistant for Kenya. Get plain-language explanations and generate basic legal documents in minutes.",
@@ -93,6 +95,8 @@ const sw: Record<TranslationKey, string> = {
     "⚠️ Muhimu: HAKI AI hutoa taarifa za kisheria kwa ujumla tu. Haiutoi ushauri wa kisheria wala kuunda uhusiano wa mawakili. Kwa masuala mazito, tafadhali wasiliana na Advocate wa Mahakama Kuu ya Kenya aliyeidhinishwa.",
   "disclaimer.sw":
     "⚠️ Important: HAKI AI provides general legal information only. It does not provide legal advice or create a lawyer-client relationship. For serious matters, please consult a licensed Advocate of the High Court of Kenya.",
+  "scope.limitation":
+    "⚠️ SCOPE LIMITATION: HAKI AI provides general information on five specific legal rights areas only: Tenant Rights, Employment, Consumer Protection, Debt Recovery, and Business Agreements. It does not cover criminal law, family disputes, immigration, land ownership, constitutional petitions, or any other legal matter. This is not legal advice. For issues outside these areas, please consult a qualified advocate or use our Legal Aid Directory.",
   "hero.title": "Upatikanaji wa Haki, Kwa Urahisi.",
   "hero.subtitle":
     "Msaada wako wa taarifa za kisheria uliojengwa wingu kwa Kenya. Paelezo kwa lugha rahisi na utengeneze hati za kisheria za msingi ndani ya dakika chache.",

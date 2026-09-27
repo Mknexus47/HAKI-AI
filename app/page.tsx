@@ -21,6 +21,14 @@ import {
   Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import FeaturesSection from "@/components/layout/FeaturesSection";
 import TopicsSection from "@/components/layout/TopicsSection";
 import DocumentPreviewSection from "@/components/layout/DocumentPreviewSection";
@@ -268,9 +276,49 @@ export default function Home() {
           </div>
 
           <div className="md:hidden">
-            <Button variant="ghost" size="icon" aria-label="Open navigation menu">
-              <Menu className="h-5 w-5" aria-hidden="true" />
-            </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Open navigation menu"
+                >
+                  <Menu className="h-5 w-5" aria-hidden="true" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" aria-label="Mobile navigation menu">
+                <SheetHeader>
+                  <SheetTitle asChild>
+                    <Link href="/" aria-label="HAKI AI home">
+                      HAKI AI
+                    </Link>
+                  </SheetTitle>
+                </SheetHeader>
+                <nav
+                  aria-label="Mobile navigation"
+                  className="mt-6 flex flex-col gap-1"
+                >
+                  {navLinks.map((link) => (
+                    <SheetClose asChild key={link.href + link.key}>
+                      <Link
+                        href={link.href}
+                        className="rounded-md px-3 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                      >
+                        {t(link.key)}
+                      </Link>
+                    </SheetClose>
+                  ))}
+                </nav>
+                <div className="mt-4">
+                  <LanguageToggle stacked />
+                </div>
+                <SheetClose asChild>
+                  <div className="mt-4">
+                    <AuthActions stacked />
+                  </div>
+                </SheetClose>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
@@ -327,6 +375,9 @@ export default function Home() {
         <div className="mx-auto max-w-7xl space-y-1 px-4 py-4 text-center text-sm font-medium leading-relaxed text-amber-900 sm:px-6 lg:px-8">
           <p>{t("disclaimer")}</p>
           <p className="text-amber-800/90">{t("disclaimer.sw")}</p>
+          <p className="font-semibold text-amber-950">
+            {t("scope.limitation")}
+          </p>
           <p>
             <Link
               href="/legal-aid"

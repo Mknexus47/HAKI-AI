@@ -116,6 +116,14 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Login"}
             </Button>
           </form>
+          <p className="mt-4 text-center text-sm text-slate-600">
+            <Link
+              href="/auth/forgot-password"
+              className="font-medium text-slate-900 underline-offset-4 hover:underline"
+            >
+              Forgot your password?
+            </Link>
+          </p>
           <div className="my-5 flex items-center gap-3">
             <span className="h-px flex-1 bg-slate-200" aria-hidden="true" />
             <span className="text-xs font-medium uppercase tracking-wider text-slate-400">
