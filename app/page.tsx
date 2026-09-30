@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import AnimatedLogo from "@/components/layout/AnimatedLogo";
 import {
   Menu,
   Scale,
@@ -60,25 +60,7 @@ const legalTopics = [
 const modelProviders = ["OpenAI", "Google Gemini", "Groq Llama"];
 
 function BrandLogo({ className }: { className?: string }) {
-  return (
-    <Link
-      href="/"
-      aria-label="HAKI AI home"
-      className={`flex items-center gap-2 ${className ?? ""}`}
-    >
-      <Image
-        src="/logo-icon.jpg"
-        alt="HAKI AI logo"
-        width={44}
-        height={44}
-        priority
-        className="h-11 w-11 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
-      />
-      <span className="text-gradient-brand text-2xl font-bold tracking-tight">
-        HAKI AI
-      </span>
-    </Link>
-  );
+  return <AnimatedLogo className={className} />;
 }
 
 function AppMockup() {

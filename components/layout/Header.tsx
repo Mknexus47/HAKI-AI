@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Menu, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +12,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import AuthActions from "@/components/layout/AuthActions";
+import AnimatedLogo from "@/components/layout/AnimatedLogo";
 import { useLanguage } from "@/components/language-provider";
 import type { TranslationKey } from "@/lib/i18n";
 
@@ -51,22 +51,7 @@ export default function Header() {
     <>
       <header className="fixed left-0 right-0 top-0 z-50 border-b border-slate-200 bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/"
-            aria-label="HAKI AI home"
-            className="flex items-center gap-2"
-          >
-            <Image
-              src="/logo-icon.jpg"
-              alt="HAKI AI logo"
-              width={44}
-              height={44}
-              className="h-11 w-11 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
-            />
-            <span className="text-gradient-brand text-2xl font-bold tracking-tight">
-              HAKI AI
-            </span>
-          </Link>
+          <AnimatedLogo />
 
           <nav
             aria-label="Main navigation"
