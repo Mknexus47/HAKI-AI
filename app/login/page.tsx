@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { LogIn } from "lucide-react";
 import { GoogleIcon } from "@/components/ui/google-icon";import { Button } from "@/components/ui/button";
 import PageShell from "@/components/layout/PageShell";
-import { createClient } from "@/lib/supabase-client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase-client";
 
 const inputClassName =
   "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ring";
@@ -20,6 +20,12 @@ export default function LoginPage() {
 
   const handleGoogle = async () => {
     setError(null);
+    if (!isSupabaseConfigured()) {
+      setError(
+        "Google sign-in is not available right now (login service not configured). Please use email and password."
+      );
+      return;
+    }
     setGoogleLoading(true);
     const supabase = createClient();
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
