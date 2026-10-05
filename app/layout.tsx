@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LanguageProvider } from "@/components/language-provider";
 import { OfflineSupport } from "@/components/offline-support";
+import SplashScreen from "@/components/layout/SplashScreen";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className={`${inter.className} font-sans antialiased`}>
         <ThemeProvider>
           <LanguageProvider>
+            <SplashScreen />
             {children}
             <OfflineSupport />
           </LanguageProvider>
