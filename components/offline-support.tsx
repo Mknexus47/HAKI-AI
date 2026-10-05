@@ -59,15 +59,24 @@ export function OfflineSupport() {
 
   // Password recovery links sometimes fall back to the Site URL (homepage)
   // when Supabase rejects the redirect target — forward them to the form.
+  // Same for OAuth `?code=` which lands on `/` when `/auth/callback`
+  // is not in Supabase's allowed redirect list.
   const router = useRouter();
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const hasCode = params.has("code");
     const isRecovery =
       window.location.pathname === "/" &&
-      (params.has("code") ||
-        window.location.hash.includes("access_token"));
+      (hasCode || window.location.hash.includes("access_token"));
     if (isRecovery) {
-      router.replace("/auth/reset-password");
+      const isPasswordRecovery =
+        params.get("type") === "recovery" ||
+        window.location.hash.includes("type=recovery");
+      router.replace(
+        isPasswordRecovery
+          ? "/auth/reset-password"
+          : `/auth/callback?${params.toString()}`
+      );
     }
   }, [router]);
 
