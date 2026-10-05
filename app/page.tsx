@@ -19,6 +19,10 @@ import {
   FileText,
   MessageSquare,
   Clock,
+  ShieldAlert,
+  Languages,
+  ScrollText,
+  ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -352,22 +356,64 @@ export default function Home() {
       {/* Safety First disclaimer banner */}
       <section
         aria-label="Legal disclaimer"
-        className="border-y border-amber-200 bg-amber-50"
+        className="border-y border-amber-200/70 bg-gradient-to-b from-amber-50 to-[#fdf6e7]"
       >
-        <div className="mx-auto max-w-7xl space-y-1 px-4 py-4 text-center text-sm font-medium leading-relaxed text-amber-900 sm:px-6 lg:px-8">
-          <p>{t("disclaimer")}</p>
-          <p className="text-amber-800/90">{t("disclaimer.sw")}</p>
-          <p className="font-semibold text-amber-950">
-            {t("scope.limitation")}
-          </p>
-          <p>
-            <Link
-              href="/legal-aid"
-              className="font-semibold underline underline-offset-2 hover:text-amber-700"
+        <div className="mx-auto max-w-5xl px-5 py-8 sm:px-8">
+          <div className="flex flex-wrap items-center gap-4">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white shadow-md shadow-amber-500/25">
+              <ShieldAlert className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <div className="min-w-[200px] flex-1">
+              <h2 className="text-base font-bold text-slate-900 sm:text-lg">
+                Important Notice <span className="font-medium text-slate-400">·</span>{" "}
+                <span className="font-semibold text-slate-600">Muhimu</span>
+              </h2>
+              <p className="mt-0.5 text-[13px] text-slate-500">
+                General legal information only — not legal advice.
+              </p>
+            </div>
+            <Button
+              asChild
+              className="h-10 rounded-full bg-slate-900 px-5 text-sm font-semibold text-white hover:bg-slate-700"
             >
-              {t("legalAid.getHelp")} →
-            </Link>
-          </p>
+              <Link href="/legal-aid">
+                {t("legalAid.getHelp")}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </Button>
+          </div>
+
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            <div className="flex gap-3 rounded-xl border border-amber-200/60 bg-white/80 p-4 shadow-sm">
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-amber-100 text-[11px] font-bold text-amber-700">
+                EN
+              </span>
+              <p className="text-[13px] leading-relaxed text-slate-600">
+                {t("disclaimer").replace(/^⚠️\s*/, "")}
+              </p>
+            </div>
+            <div className="flex gap-3 rounded-xl border border-amber-200/60 bg-white/80 p-4 shadow-sm">
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-amber-100 text-[11px] font-bold text-amber-700">
+                <Languages className="h-4 w-4" aria-hidden="true" />
+              </span>
+              <p className="text-[13px] leading-relaxed text-slate-600">
+                {t("disclaimer.sw").replace(/^⚠️\s*/, "")}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-3 flex gap-3 rounded-xl border border-slate-900/10 bg-slate-900 p-4 text-left shadow-sm">
+            <ScrollText
+              className="h-5 w-5 shrink-0 text-[#c9a227]"
+              aria-hidden="true"
+            />
+            <p className="text-[13px] leading-relaxed text-slate-300">
+              <span className="font-bold uppercase tracking-wide text-[#e6c65c]">
+                Scope:{" "}
+              </span>
+              {t("scope.limitation").replace(/^⚠️\s*(SCOPE LIMITATION:\s*)?/i, "")}
+            </p>
+          </div>
         </div>
       </section>
 
