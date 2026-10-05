@@ -18,21 +18,33 @@ export default function AuthActions({ stacked = false }: AuthActionsProps) {
   const [email, setEmail] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      setEmail(data.user?.email ?? null);
-    });
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setEmail(session?.user?.email ?? null);
-    });
-    return () => subscription.unsubscribe();
+    try {
+      const supabase = createClient();
+      supabase.auth
+        .getUser()
+        .then(({ data }) => {
+          setEmail(data.user?.email ?? null);
+        })
+        .catch(() => setEmail(null));
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        setEmail(session?.user?.email ?? null);
+      });
+      return () => subscription.unsubscribe();
+    } catch {
+      setEmail(null);
+      return undefined;
+    }
   }, []);
 
   const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch {
+      // ignore — auth unavailable
+    }
     router.push("/");
     router.refresh();
   };
