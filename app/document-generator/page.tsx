@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FileText, Clock } from "lucide-react";
+import { ArrowRight, FileText } from "lucide-react";
 import PageShell from "@/components/layout/PageShell";
 
 interface Template {
@@ -22,30 +22,35 @@ const templates: Template[] = [
     description:
       "Acknowledge rent received and record the payment terms.",
     fields: "Landlord, tenant, property, amount, period",
+    href: "/generate-rent-acknowledgement",
   },
   {
     name: "Business Service Agreement Draft",
     description:
       "A simple agreement covering scope, price, and timelines.",
     fields: "Parties, scope, price, timeline, payment schedule",
+    href: "/generate-service-agreement",
   },
   {
     name: "Loan Acknowledgement Letter",
     description:
       "Record a loan amount, repayment terms, and both parties.",
     fields: "Lender, borrower, amount, repayment date",
+    href: "/generate-loan-acknowledgement",
   },
   {
     name: "Complaint Letter",
     description:
       "A formal complaint to a business, office, or service provider.",
     fields: "Sender, recipient, issue, remedy requested, deadline",
+    href: "/generate-complaint-letter",
   },
   {
     name: "Request for Refund Letter",
     description:
       "Request a refund for goods or services that were not delivered.",
     fields: "Buyer, seller, amount, reason, purchase date",
+    href: "/generate-refund-letter",
   },
 ];
 
@@ -80,10 +85,8 @@ export default function DocumentGeneratorPage() {
                 Fields: {template.fields}
               </span>
               <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-slate-700">
-                {template.href ? "Open generator" : "Coming soon"}
-                {template.href && (
-                  <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                )}
+                Open generator
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
               </span>
             </>
           );

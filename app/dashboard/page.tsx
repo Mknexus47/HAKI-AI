@@ -15,10 +15,11 @@ import { createClient } from "@/lib/supabase-client";
 import { useLanguage } from "@/components/language-provider";
 import { downloadPdf } from "@/lib/pdf";
 import {
-  demandLetterParagraphs,
-  DEMAND_LETTER_DOC_TYPE,
+  DOCUMENT_EDIT_PATHS,
+  DOCUMENT_PDF_TITLES,
   DOCUMENT_TITLES,
-  type DemandLetterForm,
+  buildParagraphsForDoc,
+  type GenericForm,
 } from "@/lib/documents";
 
 interface DocumentRow {
@@ -26,7 +27,7 @@ interface DocumentRow {
   doc_type: string;
   title: string;
   status: string;
-  form_data: DemandLetterForm | null;
+  form_data: GenericForm | null;
   created_at: string;
 }
 
@@ -89,11 +90,12 @@ export default function DashboardPage() {
       month: "long",
       year: "numeric",
     });
-    downloadPdf(
-      `haki-ai-${doc.doc_type}.pdf`,
-      demandLetterParagraphs(doc.form_data, today),
-      { title: "DEMAND LETTER" }
-    );
+    downloadPdf(`haki-ai-${doc.doc_type}.pdf`, buildParagraphsForDoc(doc.doc_type, doc.form_data, today), {
+      title:
+        DOCUMENT_PDF_TITLES[doc.doc_type] ??
+        DOCUMENT_TITLES[doc.doc_type] ??
+        doc.doc_type,
+    });
   };
 
   const handleDelete = async (id: string) => {
@@ -149,7 +151,7 @@ export default function DashboardPage() {
                   {DOCUMENT_TITLES[draft.doc_type] ?? draft.doc_type}
                 </span>
                 <Link
-                  href={`/generate-demand-letter?draft=1`}
+                  href={`${DOCUMENT_EDIT_PATHS[draft.doc_type] ?? "/generate-demand-letter"}?draft=1`}
                   className="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white hover:bg-slate-700"
                 >
                   {t("dashboard.drafts")} →

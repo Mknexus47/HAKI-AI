@@ -99,8 +99,11 @@ export async function moderateQuestion(
 
   pushRecentTimestamp();
 
-  const lowered = question.toLowerCase();
-  const keyword = BLOCKED_KEYWORDS.find((word) => lowered.includes(word));
+  // Word-boundary matching so innocent words never trip the filter
+  // (e.g. "kill" inside "skill", "bomb" inside "bombard").
+  const keyword = BLOCKED_KEYWORDS.find((word) =>
+    new RegExp(`\\b${word}\\b`, "i").test(question)
+  );
 
   if (keyword) {
     await recordFlag(`blocked keyword: ${keyword}`, question);

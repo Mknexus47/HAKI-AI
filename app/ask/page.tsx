@@ -9,61 +9,7 @@ import Feedback from "@/components/ui/feedback";
 import { useLanguage } from "@/components/language-provider";
 import { useOnlineStatus } from "@/components/offline-support";
 import { moderateQuestion, isTemporarilyBanned } from "@/lib/moderation";
-
-interface Message {
-  role: "user" | "assistant";
-  text: string;
-  offerHelp?: boolean;
-}
-
-const cannedAnswers: { match: RegExp; answer: string }[] = [
-  {
-    match: /tenant|landlord|deposit|rent/i,
-    answer:
-      "In Kenya, a tenant has the right to safe and habitable accommodation, peaceful enjoyment of the property, and protection from unlawful eviction. Your landlord must follow the tenancy agreement and due process before ending a tenancy, and must return your deposit less any agreed deductions. First, review your tenancy agreement. Second, raise the issue with your landlord in writing. Third, if unresolved, send a formal demand letter or contact the Rent Restriction Tribunal. HAKI AI provides general legal information only and does not provide legal advice.",
-  },
-  {
-    match: /dismiss|fired|employment|salary|employer/i,
-    answer:
-      "Under the Employment Act, an employee is entitled to a fair reason and a fair procedure before dismissal, and to notice or pay in lieu of notice. Keep your contract, payslips, and any related messages. Raise a formal grievance in writing first; if unresolved, send a complaint letter to your employer and consider reporting to the Ministry of Labour. HAKI AI provides general legal information only and does not provide legal advice.",
-  },
-  {
-    match: /refund|faulty|consumer|goods|shop/i,
-    answer:
-      "Consumers in Kenya are entitled to goods and services that are safe, of acceptable quality, and as described. For faulty goods you may be entitled to repair, replacement, or refund. Keep your receipt, contact the seller in writing stating the remedy you want, and send a formal refund request letter if there is no response. HAKI AI provides general legal information only and does not provide legal advice.",
-  },
-  {
-    match: /demand letter|owed|debt|owe|money/i,
-    answer:
-      "A demand letter should clearly state the amount owed, the reason, the original due date, the action you require, and a deadline (commonly 7 days). Gather your agreement and payment records first, then send the demand letter and keep proof of delivery. If the deadline passes, consult a licensed advocate about next steps. HAKI AI provides general legal information only and does not provide legal advice.",
-  },
-  {
-    match: /agreement|contract|business|service/i,
-    answer:
-      "A simple business service agreement should include both parties, the scope of work, price, payment schedule, timeline, and a dispute resolution clause. Both parties should review and sign, and each keep a copy. HAKI AI provides general legal information only and does not provide legal advice.",
-  },
-];
-
-const highRisk =
-  /court|criminal|charge|theft|assault|murder|violence|divorce|land case|inheritance|will/i;
-
-const defaultAnswer =
-  "Thank you for your question. HAKI AI answers using curated Kenyan legal information in plain English. Try asking about tenant and landlord rights, employment basics, consumer rights, debt recovery, business agreements, or complaint letters. For serious matters, please consult a licensed advocate of the High Court of Kenya. HAKI AI provides general legal information only and does not provide legal advice.";
-
-function getAnswer(question: string): Message {
-  if (highRisk.test(question)) {
-    return {
-      role: "assistant",
-      text: "This matter may require urgent professional legal assistance. Please contact a licensed advocate or a legal aid organisation listed in our directory. HAKI AI provides general legal information only and does not provide legal advice.",
-      offerHelp: true,
-    };
-  }
-  const found = cannedAnswers.find((entry) => entry.match.test(question));
-  return {
-    role: "assistant",
-    text: found ? found.answer : defaultAnswer,
-  };
-}
+import { getAnswer, type ChatMessage as Message } from "@/lib/chat";
 
 export default function AskPage() {
   const { t } = useLanguage();
@@ -72,6 +18,9 @@ export default function AskPage() {
   const [input, setInput] = React.useState("");
   const [sending, setSending] = React.useState(false);
   const [greeting, setGreeting] = React.useState("");
+  // Monotonic id so a slow moderation call can never attach its response
+  // to a newer question (no stale responses on rapid consecutive sends).
+  const requestId = React.useRef(0);
 
   React.useEffect(() => {
     const welcome = `${t("ask.greeting")}\n\n${t("scope.limitation")}`;
@@ -83,37 +32,56 @@ export default function AskPage() {
     event.preventDefault();
     const question = input.trim();
     if (!question || sending || !online) return;
+    const currentRequest = requestId.current + 1;
+    requestId.current = currentRequest;
     setSending(true);
     setInput("");
 
-    const moderation = await moderateQuestion(question);
+    try {
+      const moderation = await moderateQuestion(question);
+      // A newer send superseded this one — drop the stale result.
+      if (requestId.current !== currentRequest) return;
 
-    if (moderation.action === "ban") {
+      if (moderation.action === "ban") {
+        setMessages((current) => [
+          ...current,
+          { role: "user", text: question },
+          { role: "assistant", text: t("moderation.banned") },
+        ]);
+        return;
+      }
+
+      if (moderation.action === "flag") {
+        setMessages((current) => [
+          ...current,
+          { role: "user", text: question },
+          { role: "assistant", text: t("moderation.paused") },
+        ]);
+        return;
+      }
+
+      // The exact latest question is classified fresh — history is display
+      // only and never influences the answer, so a previous answer can never
+      // leak into the current response.
+      const answer = getAnswer(question);
       setMessages((current) => [
         ...current,
         { role: "user", text: question },
-        { role: "assistant", text: t("moderation.banned") },
+        answer,
       ]);
-      setSending(false);
-      return;
-    }
-
-    if (moderation.action === "flag") {
+    } catch {
+      if (requestId.current !== currentRequest) return;
       setMessages((current) => [
         ...current,
         { role: "user", text: question },
-        { role: "assistant", text: t("moderation.paused") },
+        {
+          role: "assistant",
+          text: "Sorry — something went wrong while preparing your answer. Please try sending your question again.",
+        },
       ]);
-      setSending(false);
-      return;
+    } finally {
+      if (requestId.current === currentRequest) setSending(false);
     }
-
-    setMessages((current) => [
-      ...current,
-      { role: "user", text: question },
-      getAnswer(question),
-    ]);
-    setSending(false);
   };
 
   const offline = !online;
