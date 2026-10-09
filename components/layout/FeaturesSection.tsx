@@ -11,7 +11,7 @@ const features: Feature[] = [
     icon: MessageSquare,
     title: "AI Legal Assistant",
     description:
-      "Ask questions about Kenyan law in plain English. Our AI uses curated legal data to provide accurate, easy-to-understand answers.",
+      "Ask questions about Kenyan law in plain English. Our AI uses curated legal information to give clear, easy-to-understand answers. Always verify with a licensed advocate.",
   },
   {
     icon: FileText,

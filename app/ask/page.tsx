@@ -48,7 +48,7 @@ const highRisk =
   /court|criminal|charge|theft|assault|murder|violence|divorce|land case|inheritance|will/i;
 
 const defaultAnswer =
-  "Thank you for your question. HAKI AI answers using curated Kenyan legal information in plain English. Try asking about tenant and landlord rights, employment basics, consumer rights, debt recovery, or business agreements. For serious matters, please consult a licensed advocate of the High Court of Kenya. HAKI AI provides general legal information only and does not provide legal advice.";
+  "Thank you for your question. HAKI AI answers using curated Kenyan legal information in plain English. Try asking about tenant and landlord rights, employment basics, consumer rights, debt recovery, business agreements, or complaint letters. For serious matters, please consult a licensed advocate of the High Court of Kenya. HAKI AI provides general legal information only and does not provide legal advice.";
 
 function getAnswer(question: string): Message {
   if (highRisk.test(question)) {

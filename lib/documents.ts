@@ -29,7 +29,7 @@ export function demandLetterParagraphs(
     } owed to me in respect of ${form.issue.toLowerCase()}.`,
     form.dueDate
       ? `Payment was due on ${form.dueDate}.`
-      : "Payment was due on [date money was due].",
+      : "Payment was due on 1 September 2026 (sample date - enter the actual due date).",
     `The action required of you is: ${form.action}.`,
     `Please comply within ${form.deadline || "7"} days of receiving this letter.`,
     "",

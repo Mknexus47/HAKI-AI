@@ -9,11 +9,29 @@ import SplashScreen from "@/components/layout/SplashScreen";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const SITE_URL = "https://haki-ai-virid.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "HAKI AI | Legal Information and Document Assistance Platform",
   description:
     "Cloud-hosted, AI-powered legal information and document generation platform for Kenya. Not a substitute for a licensed advocate.",
   manifest: "/manifest.json",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "HAKI AI | Legal Information and Document Assistance Platform",
+    description:
+      "Cloud-hosted, AI-powered legal information and document generation platform for Kenya. Not a substitute for a licensed advocate.",
+    url: SITE_URL,
+    siteName: "HAKI AI",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HAKI AI | Legal Information and Document Assistance Platform",
+    description:
+      "Cloud-hosted, AI-powered legal information and document generation platform for Kenya. Not a substitute for a licensed advocate.",
+  },
 };
 
 export default function RootLayout({

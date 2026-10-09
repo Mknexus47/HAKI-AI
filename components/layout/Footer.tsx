@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Linkedin, Twitter } from "lucide-react";
 
 const footerLinks = [
   { href: "/legal-aid", label: "Legal Aid Directory" },
@@ -32,23 +31,6 @@ export default function Footer() {
               </Link>
             ))}
           </nav>
-
-          <div className="flex items-center gap-4">
-            <Link
-              href="#"
-              aria-label="HAKI AI on LinkedIn"
-              className="rounded-md p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
-            >
-              <Linkedin className="h-5 w-5" aria-hidden="true" />
-            </Link>
-            <Link
-              href="#"
-              aria-label="HAKI AI on Twitter / X"
-              className="rounded-md p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
-            >
-              <Twitter className="h-5 w-5" aria-hidden="true" />
-            </Link>
-          </div>
         </div>
 
         <div className="mt-10 border-t border-slate-800 pt-6 text-sm text-slate-500">

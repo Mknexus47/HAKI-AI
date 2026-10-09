@@ -15,6 +15,10 @@ export default function DocumentPreviewSection() {
   const [sender, setSender] = React.useState("John Kamau");
   const [recipient, setRecipient] = React.useState("Jane Wanjiku");
   const [amount, setAmount] = React.useState("15000");
+  const [reason, setReason] = React.useState(
+    "unpaid consultancy services rendered in August 2026"
+  );
+  const [dueDate, setDueDate] = React.useState("1 September 2026");
 
   return (
     <section
@@ -89,6 +93,38 @@ export default function DocumentPreviewSection() {
                   className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
+              <div>
+                <label
+                  htmlFor="reason-owed"
+                  className="mb-1.5 block text-sm font-medium text-slate-700"
+                >
+                  Reason for the debt
+                </label>
+                <input
+                  id="reason-owed"
+                  type="text"
+                  value={reason}
+                  onChange={(event) => setReason(event.target.value)}
+                  placeholder="e.g. unpaid services rendered"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="due-date-preview"
+                  className="mb-1.5 block text-sm font-medium text-slate-700"
+                >
+                  Date money was due
+                </label>
+                <input
+                  id="due-date-preview"
+                  type="text"
+                  value={dueDate}
+                  onChange={(event) => setDueDate(event.target.value)}
+                  placeholder="e.g. 1 September 2026"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
             </div>
           </div>
 
@@ -108,22 +144,47 @@ export default function DocumentPreviewSection() {
                   year: "numeric",
                 })}
               </p>
-              <p>Dear {recipient || "[Recipient Name]"},</p>
               <p>
-                I, <strong>{sender || "[Your Name]"}</strong>, formally demand
-                the sum of{" "}
+                Dear{" "}
+                {recipient ? (
+                  recipient
+                ) : (
+                  <span className="italic text-slate-400">
+                    [Recipient Name]
+                  </span>
+                )}
+                ,
+              </p>
+              <p>
+                I,{" "}
+                {sender ? (
+                  <strong>{sender}</strong>
+                ) : (
+                  <span className="italic text-slate-400">[Your Name]</span>
+                )}
+                , formally demand the sum of{" "}
                 <strong>KES {formatAmount(amount)}</strong> owed to me as
                 outstanding payment for{" "}
-                <span className="italic">
-                  [reason for the debt, e.g. unpaid services rendered]
-                </span>
+                {reason ? (
+                  reason
+                ) : (
+                  <span className="italic text-slate-400">
+                    unpaid consultancy services rendered in August 2026
+                  </span>
+                )}
                 .
               </p>
               <p>
                 Payment was due on{" "}
-                <span className="italic">[date money was due]</span>. Kindly
-                remit the full amount within 7 days of receiving this letter,
-                or provide a written explanation of the delay.
+                {dueDate ? (
+                  dueDate
+                ) : (
+                  <span className="italic text-slate-400">
+                    1 September 2026
+                  </span>
+                )}
+                . Kindly remit the full amount within 7 days of receiving
+                this letter, or provide a written explanation of the delay.
               </p>
               <p>
                 Should the matter remain unresolved, I reserve the right to
@@ -132,7 +193,11 @@ export default function DocumentPreviewSection() {
               <p className="pt-2">
                 Yours faithfully,
                 <br />
-                <strong>{sender || "[Your Name]"}</strong>
+                {sender ? (
+                  <strong>{sender}</strong>
+                ) : (
+                  <span className="italic text-slate-400">[Your Name]</span>
+                )}
               </p>
             </div>
           </div>

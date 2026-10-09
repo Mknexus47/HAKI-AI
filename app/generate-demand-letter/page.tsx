@@ -372,20 +372,46 @@ export default function GenerateDemandLetterPage() {
               DEMAND LETTER
             </p>
             <p className="text-slate-500">{today}</p>
-            <p>Dear {form.recipient || "[Recipient Name]"},</p>
+            <p>
+              Dear{" "}
+              {form.recipient || (
+                <span className="italic text-slate-400">
+                  [Recipient Name]
+                </span>
+              )}
+              ,
+            </p>
             <p className="font-semibold">
               RE: DEMAND FOR PAYMENT — {form.issue.toUpperCase()}
             </p>
             <p>
-              I, <strong>{form.sender || "[Your Name]"}</strong> (telephone:{" "}
-              {form.phone || "[phone]"}), formally demand the sum of{" "}
-              <strong>KES {form.amount || "[Amount]"}</strong> owed to me in
-              respect of {form.issue.toLowerCase()}.
+              I,{" "}
+              {form.sender ? (
+                <strong>{form.sender}</strong>
+              ) : (
+                <span className="italic text-slate-400">[Your Name]</span>
+              )}{" "}
+              (telephone:{" "}
+              {form.phone || (
+                <span className="italic text-slate-400">[phone]</span>
+              )}
+              ), formally demand the sum of{" "}
+              {form.amount ? (
+                <strong>KES {form.amount}</strong>
+              ) : (
+                <span className="italic text-slate-400">[Amount]</span>
+              )}{" "}
+              owed to me in respect of {form.issue.toLowerCase()}.
             </p>
             <p>
-              {form.dueDate
-                ? `Payment was due on ${form.dueDate}.`
-                : "Payment was due on [date money was due]."}
+              {form.dueDate ? (
+                `Payment was due on ${form.dueDate}.`
+              ) : (
+                <span className="italic text-slate-400">
+                  Payment was due on 1 September 2026 (sample date — enter the
+                  actual due date).
+                </span>
+              )}
             </p>
             <p>The action required of you is: {form.action}.</p>
             <p>
@@ -400,7 +426,11 @@ export default function GenerateDemandLetterPage() {
             <p className="pt-2">
               Yours faithfully,
               <br />
-              <strong>{form.sender || "[Your Name]"}</strong>
+              {form.sender ? (
+                <strong>{form.sender}</strong>
+              ) : (
+                <span className="italic text-slate-400">[Your Name]</span>
+              )}
             </p>
           </div>
         </div>
