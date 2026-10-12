@@ -1,40 +1,36 @@
-import Link from "next/link";
-import { ArrowRight, FileText } from "lucide-react";
-import PageShell from "@/components/layout/PageShell";
+import Link from "next/link"
+import { ArrowRight, FileText } from "lucide-react"
+import PageShell from "@/components/layout/PageShell"
 
 interface Template {
-  name: string;
-  description: string;
-  fields: string;
-  href?: string;
+  name: string
+  description: string
+  fields: string
+  href?: string
 }
 
 const templates: Template[] = [
   {
     name: "Simple Demand Letter",
-    description:
-      "Formally demand money owed with a clear amount and deadline.",
+    description: "Formally demand money owed with a clear amount and deadline.",
     fields: "Sender, recipient, amount, reason, deadline",
     href: "/generate-demand-letter",
   },
   {
     name: "Rent Acknowledgement Letter",
-    description:
-      "Acknowledge rent received and record the payment terms.",
+    description: "Acknowledge rent received and record the payment terms.",
     fields: "Landlord, tenant, property, amount, period",
     href: "/generate-rent-acknowledgement",
   },
   {
     name: "Business Service Agreement Draft",
-    description:
-      "A simple agreement covering scope, price, and timelines.",
+    description: "A simple agreement covering scope, price, and timelines.",
     fields: "Parties, scope, price, timeline, payment schedule",
     href: "/generate-service-agreement",
   },
   {
     name: "Loan Acknowledgement Letter",
-    description:
-      "Record a loan amount, repayment terms, and both parties.",
+    description: "Record a loan amount, repayment terms, and both parties.",
     fields: "Lender, borrower, amount, repayment date",
     href: "/generate-loan-acknowledgement",
   },
@@ -52,7 +48,28 @@ const templates: Template[] = [
     fields: "Buyer, seller, amount, reason, purchase date",
     href: "/generate-refund-letter",
   },
-];
+  {
+    name: "Residential Tenancy Agreement",
+    description:
+      "A basic tenancy agreement recording parties, property, rent, and term.",
+    fields: "Landlord, tenant, property, rent, term, start date",
+    href: "/generate-tenancy-agreement",
+  },
+  {
+    name: "Employment Contract",
+    description:
+      "A basic contract of service covering duties, salary, and key terms.",
+    fields: "Employer, employee, job title, salary, start date",
+    href: "/generate-employment-contract",
+  },
+  {
+    name: "Affidavit",
+    description:
+      "A sworn-statement draft with jurat — must be commissioned before use.",
+    fields: "Deponent, statement of facts, place, date",
+    href: "/generate-affidavit",
+  },
+]
 
 export default function DocumentGeneratorPage() {
   return (
@@ -62,7 +79,15 @@ export default function DocumentGeneratorPage() {
       </h1>
       <p className="mt-4 max-w-3xl text-lg leading-relaxed text-slate-600">
         Choose a template, fill in a guided form, and download your document.
-        All documents are generated from fixed templates — no raw AI drafting.
+        All documents are generated from fixed templates plus legal references
+        retrieved from a{" "}
+        <Link
+          href="/legal-sources"
+          className="font-semibold text-[#c0221b] underline underline-offset-2"
+        >
+          verified repository of Kenyan legal sources
+        </Link>{" "}
+        — no raw AI drafting, and every citation is validated before export.
       </p>
 
       <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -89,7 +114,7 @@ export default function DocumentGeneratorPage() {
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
               </span>
             </>
-          );
+          )
 
           return template.href ? (
             <Link
@@ -106,7 +131,7 @@ export default function DocumentGeneratorPage() {
             >
               {card}
             </div>
-          );
+          )
         })}
       </div>
 
@@ -119,5 +144,5 @@ export default function DocumentGeneratorPage() {
         </Link>
       </div>
     </PageShell>
-  );
+  )
 }

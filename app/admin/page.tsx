@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import * as React from "react";
+import * as React from "react"
 import {
   ShieldCheck,
   LayoutDashboard,
@@ -9,53 +9,53 @@ import {
   Users,
   Flag,
   MessageSquare,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import PageShell from "@/components/layout/PageShell";
-import { createClient } from "@/lib/supabase-client";
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import PageShell from "@/components/layout/PageShell"
+import { createClient } from "@/lib/supabase-client"
 
 const inputClassName =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ring";
-const labelClassName = "mb-1.5 block text-sm font-medium text-slate-700";
+  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ring"
+const labelClassName = "mb-1.5 block text-sm font-medium text-slate-700"
 
-const ADMIN_EMAIL = "michaelkariuki281@gmail.com";
+const ADMIN_EMAIL = "michaelkariuki281@gmail.com"
 
 interface FlaggedRow {
-  id: string;
-  reason: string;
-  snippet: string | null;
-  flag_count: number;
-  status: string;
-  created_at: string;
+  id: string
+  reason: string
+  snippet: string | null
+  flag_count: number
+  status: string
+  created_at: string
 }
 
 interface FeedbackRow {
-  id: string;
-  context: string;
-  helpful: boolean;
-  reason: string | null;
-  comment: string | null;
-  created_at: string;
+  id: string
+  context: string
+  helpful: boolean
+  reason: string | null
+  comment: string | null
+  created_at: string
 }
 
 export default function AdminPage() {
-  const [loggedIn, setLoggedIn] = React.useState(false);
-  const [liveReady, setLiveReady] = React.useState(false);
-  const [liveUser, setLiveUser] = React.useState<string | null>(null);
-  const [flags, setFlags] = React.useState<FlaggedRow[]>([]);
-  const [feedback, setFeedback] = React.useState<FeedbackRow[]>([]);
+  const [loggedIn, setLoggedIn] = React.useState(false)
+  const [liveReady, setLiveReady] = React.useState(false)
+  const [liveUser, setLiveUser] = React.useState<string | null>(null)
+  const [flags, setFlags] = React.useState<FlaggedRow[]>([])
+  const [feedback, setFeedback] = React.useState<FeedbackRow[]>([])
 
   React.useEffect(() => {
-    if (!loggedIn) return;
-    const supabase = createClient();
-    let cancelled = false;
+    if (!loggedIn) return
+    const supabase = createClient()
+    let cancelled = false
 
     supabase.auth.getUser().then(async ({ data }) => {
-      const email = data.user?.email ?? null;
-      if (cancelled) return;
-      setLiveUser(email);
-      setLiveReady(true);
-      if (email !== ADMIN_EMAIL) return;
+      const email = data.user?.email ?? null
+      if (cancelled) return
+      setLiveUser(email)
+      setLiveReady(true)
+      if (email !== ADMIN_EMAIL) return
       const [flagRows, feedbackRows] = await Promise.all([
         supabase
           .from("flagged_sessions")
@@ -67,31 +67,31 @@ export default function AdminPage() {
           .select("id, context, helpful, reason, comment, created_at")
           .order("created_at", { ascending: false })
           .limit(25),
-      ]);
-      if (cancelled) return;
-      setFlags((flagRows.data as FlaggedRow[]) ?? []);
-      setFeedback((feedbackRows.data as FeedbackRow[]) ?? []);
-    });
+      ])
+      if (cancelled) return
+      setFlags((flagRows.data as FlaggedRow[]) ?? [])
+      setFeedback((feedbackRows.data as FeedbackRow[]) ?? [])
+    })
 
     return () => {
-      cancelled = true;
-    };
-  }, [loggedIn]);
+      cancelled = true
+    }
+  }, [loggedIn])
 
   const updateFlag = async (id: string, status: string) => {
-    const supabase = createClient();
-    await supabase.from("flagged_sessions").update({ status }).eq("id", id);
+    const supabase = createClient()
+    await supabase.from("flagged_sessions").update({ status }).eq("id", id)
     setFlags((current) =>
       current.map((row) => (row.id === id ? { ...row, status } : row))
-    );
-  };
+    )
+  }
 
   const stats = [
     { label: "Legal topics", value: "8", icon: Scale },
-    { label: "Document templates", value: "6", icon: FileText },
+    { label: "Document templates", value: "9", icon: FileText },
     { label: "Registered users", value: "0", icon: Users },
     { label: "Documents generated", value: "0", icon: LayoutDashboard },
-  ];
+  ]
 
   if (!loggedIn) {
     return (
@@ -106,8 +106,8 @@ export default function AdminPage() {
             <form
               className="space-y-5"
               onSubmit={(event) => {
-                event.preventDefault();
-                setLoggedIn(true);
+                event.preventDefault()
+                setLoggedIn(true)
               }}
             >
               <div>
@@ -143,10 +143,10 @@ export default function AdminPage() {
           </div>
         </div>
       </PageShell>
-    );
+    )
   }
 
-  const isAdmin = liveUser === ADMIN_EMAIL;
+  const isAdmin = liveUser === ADMIN_EMAIL
 
   return (
     <PageShell>
@@ -166,22 +166,25 @@ export default function AdminPage() {
 
       <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => {
-          const Icon = stat.icon;
+          const Icon = stat.icon
           return (
             <div
               key={stat.label}
               className="card-gradient rounded-xl border p-6 shadow-sm"
             >
-              <Icon className="mb-3 h-5 w-5 text-slate-400" aria-hidden="true" />
+              <Icon
+                className="mb-3 h-5 w-5 text-slate-400"
+                aria-hidden="true"
+              />
               <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
               <p className="text-sm text-slate-600">{stat.label}</p>
             </div>
-          );
+          )
         })}
       </div>
 
       {/* Moderation queue */}
-      <div className="mt-8 card-gradient rounded-xl border p-8 shadow-sm">
+      <div className="card-gradient mt-8 rounded-xl border p-8 shadow-sm">
         <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-slate-900">
           <Flag className="h-4 w-4 text-[#e5342b]" aria-hidden="true" />
           Moderation queue
@@ -193,8 +196,8 @@ export default function AdminPage() {
           <p className="text-sm text-slate-500">Loading…</p>
         ) : !isAdmin ? (
           <p className="text-sm text-slate-500">
-            Sign in on this device with the admin account
-            ({ADMIN_EMAIL}) to load live moderation data.
+            Sign in on this device with the admin account ({ADMIN_EMAIL}) to
+            load live moderation data.
           </p>
         ) : flags.length === 0 ? (
           <p className="text-sm text-slate-500">No flagged sessions. 🎉</p>
@@ -243,7 +246,10 @@ export default function AdminPage() {
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="card-gradient rounded-xl border p-8 shadow-sm">
           <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-slate-900">
-            <MessageSquare className="h-4 w-4 text-[#e5342b]" aria-hidden="true" />
+            <MessageSquare
+              className="h-4 w-4 text-[#e5342b]"
+              aria-hidden="true"
+            />
             User feedback
           </h2>
           <p className="mb-4 text-sm text-slate-500">
@@ -304,5 +310,5 @@ export default function AdminPage() {
         </div>
       </div>
     </PageShell>
-  );
+  )
 }

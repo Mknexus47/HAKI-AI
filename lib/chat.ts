@@ -139,6 +139,29 @@ const SCOPE_ANSWER =
   "For this issue, please consult a licensed advocate of the High Court of Kenya or an organisation in our Legal Aid Directory. " +
   DISCLAIMER;
 
+// Friendly greetings / small talk that should never receive the
+// "out of scope" answer. Word boundaries (\b) and ^ anchors are used so
+// substrings inside ordinary words can never trigger (e.g. "hi" inside
+// "this", "hey" inside "they", "yo" inside "your").
+const GREETING_PATTERNS: RegExp[] = [
+  /^(hi+|hello+|hey+|hii+|yo|sup|howdy|greetings|good\s?(morning|afternoon|evening|day))\b/i,
+  /^(habari|hujambo|jambo|mambo|vipi|niaje|sasa|shikamoo|karibu|hallo|asante)\b/i,
+  /\bhow are you\b/i,
+  /\bwho are you\b/i,
+  /\bwhat can you (do|help)(\s+with)?\b/i,
+  /\bwhat do you do\b/i,
+  /\bthank(s| you)\b/i,
+  /\basante\b/i,
+  /^(bye|goodbye|goodnight|later|ciao)\b/i,
+  /^(help|help me|please help)\b/i,
+];
+
+const GREETING_ANSWER =
+  "Hello! I'm HAKI AI, your legal information assistant for Kenya. " +
+  "I can share general information on six areas: Tenant Rights, Employment, Consumer Protection, Debt Recovery, Business Agreements, and Complaint Letters. " +
+  'Ask me a question in plain language — for example: "What are my rights as a tenant?" ' +
+  DISCLAIMER;
+
 /**
  * Classify the exact latest user question and return the matching answer.
  * Stateless: conversation history is never consulted, so a response can only
@@ -166,6 +189,10 @@ export function getAnswer(question: string): ChatMessage {
 
   if (best && bestScore > 0) {
     return { role: "assistant", text: best.answer };
+  }
+
+  if (GREETING_PATTERNS.some((pattern) => pattern.test(text))) {
+    return { role: "assistant", text: GREETING_ANSWER };
   }
 
   return { role: "assistant", text: SCOPE_ANSWER, offerHelp: true };

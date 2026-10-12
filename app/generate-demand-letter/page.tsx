@@ -1,17 +1,16 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { Download, FileText, Save, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import PageShell from "@/components/layout/PageShell";
-import Feedback from "@/components/ui/feedback";
-import { downloadPdf } from "@/lib/pdf";
-import { createClient } from "@/lib/supabase-client";
-import {
-  demandLetterParagraphs,
-  DEMAND_LETTER_DOC_TYPE,
-  type DemandLetterForm,
-} from "@/lib/documents";
+import * as React from "react"
+import { Download, FileDown, FileText, Save, Trash2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import PageShell from "@/components/layout/PageShell"
+import Feedback from "@/components/ui/feedback"
+import LegalGrounding from "@/components/documents/LegalGrounding"
+import { downloadPdf } from "@/lib/pdf"
+import { downloadDocx } from "@/lib/docx"
+import { generateGroundedDocument } from "@/lib/legal-generation"
+import { createClient } from "@/lib/supabase-client"
+import { DEMAND_LETTER_DOC_TYPE, type DemandLetterForm } from "@/lib/documents"
 
 const issueTypes = [
   "Unpaid rent deposit",
@@ -20,11 +19,11 @@ const issueTypes = [
   "Undelivered goods",
   "Refund not processed",
   "Other",
-];
+]
 
 const inputClassName =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ring";
-const labelClassName = "mb-1.5 block text-sm font-medium text-slate-700";
+  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ring"
+const labelClassName = "mb-1.5 block text-sm font-medium text-slate-700"
 
 const emptyForm: DemandLetterForm = {
   sender: "",
@@ -35,33 +34,31 @@ const emptyForm: DemandLetterForm = {
   dueDate: "",
   action: "Full payment of the amount owed",
   deadline: "7",
-};
+}
 
-const STORAGE_KEY = "haki-draft-demand-letter";
+const STORAGE_KEY = "haki-draft-demand-letter"
 
 export default function GenerateDemandLetterPage() {
-  const [form, setForm] = React.useState<DemandLetterForm>(emptyForm);
-  const [consent, setConsent] = React.useState(false);
-  const [userId, setUserId] = React.useState<string | null>(null);
-  const [draftRestored, setDraftRestored] = React.useState(false);
-  const [saveState, setSaveState] = React.useState<"" | "saved">("");
-  const [generated, setGenerated] = React.useState(false);
-  const hydrated = React.useRef(false);
+  const [form, setForm] = React.useState<DemandLetterForm>(emptyForm)
+  const [consent, setConsent] = React.useState(false)
+  const [userId, setUserId] = React.useState<string | null>(null)
+  const [draftRestored, setDraftRestored] = React.useState(false)
+  const [saveState, setSaveState] = React.useState<"" | "saved">("")
+  const [generated, setGenerated] = React.useState(false)
+  const hydrated = React.useRef(false)
 
   // Hydrate: restore draft from localStorage, or from Supabase when
   // the dashboard's "Continue Draft" link carries ?draft=1.
   React.useEffect(() => {
-    const supabase = createClient();
-    let cancelled = false;
+    const supabase = createClient()
+    let cancelled = false
 
-    const wantsRemote = new URLSearchParams(window.location.search).get(
-      "draft"
-    );
+    const wantsRemote = new URLSearchParams(window.location.search).get("draft")
 
     supabase.auth.getUser().then(({ data }) => {
-      const uid = data.user?.id ?? null;
-      if (cancelled) return;
-      setUserId(uid);
+      const uid = data.user?.id ?? null
+      if (cancelled) return
+      setUserId(uid)
       if (wantsRemote && uid) {
         supabase
           .from("document_requests")
@@ -69,61 +66,61 @@ export default function GenerateDemandLetterPage() {
           .eq("doc_type", DEMAND_LETTER_DOC_TYPE)
           .maybeSingle()
           .then(({ data: remote }) => {
-            if (cancelled) return;
+            if (cancelled) return
             if (remote?.form_data) {
               setForm({
                 ...emptyForm,
                 ...(remote.form_data as DemandLetterForm),
-              });
-              setConsent(Boolean(remote.consent));
-              setDraftRestored(true);
+              })
+              setConsent(Boolean(remote.consent))
+              setDraftRestored(true)
             }
-          });
+          })
       }
-    });
+    })
 
-    let localDraft: DemandLetterForm | null = null;
+    let localDraft: DemandLetterForm | null = null
     try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
+      const raw = window.localStorage.getItem(STORAGE_KEY)
       if (raw) {
         const parsed = JSON.parse(raw) as {
-          form: DemandLetterForm;
-          consent: boolean;
-        };
-        localDraft = parsed.form;
-        setConsent(Boolean(parsed.consent));
+          form: DemandLetterForm
+          consent: boolean
+        }
+        localDraft = parsed.form
+        setConsent(Boolean(parsed.consent))
       }
     } catch {
       // ignore corrupt drafts
     }
 
     if (localDraft) {
-      setForm({ ...emptyForm, ...localDraft });
-      setDraftRestored(true);
+      setForm({ ...emptyForm, ...localDraft })
+      setDraftRestored(true)
     }
 
-    hydrated.current = true;
+    hydrated.current = true
     return () => {
-      cancelled = true;
-    };
+      cancelled = true
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   // Debounced auto-save (1.2s after the last keystroke).
   React.useEffect(() => {
-    if (!hydrated.current) return;
+    if (!hydrated.current) return
     const timer = window.setTimeout(() => {
       try {
         window.localStorage.setItem(
           STORAGE_KEY,
           JSON.stringify({ form, consent, savedAt: Date.now() })
-        );
-        setSaveState("saved");
+        )
+        setSaveState("saved")
       } catch {
         // storage full/blocked — ignore
       }
       if (consent && userId) {
-        const supabase = createClient();
+        const supabase = createClient()
         void supabase.from("document_requests").upsert(
           {
             user_id: userId,
@@ -133,54 +130,88 @@ export default function GenerateDemandLetterPage() {
             updated_at: new Date().toISOString(),
           },
           { onConflict: "user_id,doc_type" }
-        );
+        )
       }
-    }, 1200);
-    return () => window.clearTimeout(timer);
-  }, [form, consent, userId]);
+    }, 1200)
+    return () => window.clearTimeout(timer)
+  }, [form, consent, userId])
 
-  const update = (key: keyof DemandLetterForm) =>
+  const update =
+    (key: keyof DemandLetterForm) =>
     (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      setGenerated(false);
-      setForm((current) => ({ ...current, [key]: event.target.value }));
-    };
+      setGenerated(false)
+      setForm((current) => ({ ...current, [key]: event.target.value }))
+    }
 
   const today = new Date().toLocaleDateString("en-KE", {
     day: "numeric",
     month: "long",
     year: "numeric",
-  });
+  })
 
-  const paragraphs = demandLetterParagraphs(form, today);
+  // Source-grounded document: fixed template + verified Kenyan provisions +
+  // citation validation (same pipeline as GeneratorShell).
+  const grounded = React.useMemo(
+    () =>
+      generateGroundedDocument(
+        DEMAND_LETTER_DOC_TYPE,
+        form as unknown as Record<string, string>,
+        today
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(form), today]
+  )
 
   const handleGenerate = async () => {
-    downloadPdf("haki-ai-demand-letter.pdf", paragraphs, {
+    downloadPdf("haki-ai-demand-letter.pdf", grounded.paragraphs, {
       title: "DEMAND LETTER",
-    });
-    setGenerated(true);
+    })
+    setGenerated(true)
     if (userId) {
       try {
-        const supabase = createClient();
+        const supabase = createClient()
         await supabase.from("documents").insert({
           user_id: userId,
           doc_type: DEMAND_LETTER_DOC_TYPE,
           title: `Demand letter — ${form.issue} — KES ${form.amount || "—"}`,
-          status: "Generated",
+          status:
+            grounded.validation.status === "passed"
+              ? "Generated"
+              : "Generated — citation review required",
           form_data: form,
-        });
+        })
       } catch {
         // history logging must never block the download
       }
+      try {
+        await fetch("/api/generate-document", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            docType: DEMAND_LETTER_DOC_TYPE,
+            form,
+            today,
+          }),
+        })
+      } catch {
+        // version persistence must never block the download
+      }
     }
-  };
+  }
+
+  const handleDocx = () => {
+    downloadDocx("haki-ai-demand-letter.docx", grounded.paragraphs, {
+      title: "DEMAND LETTER",
+    })
+  }
 
   const handleClearDraft = () => {
-    window.localStorage.removeItem(STORAGE_KEY);
-    setForm(emptyForm);
-    setConsent(false);
-    setDraftRestored(false);
-    setSaveState("");
-  };
+    window.localStorage.removeItem(STORAGE_KEY)
+    setForm(emptyForm)
+    setConsent(false)
+    setDraftRestored(false)
+    setSaveState("")
+  }
 
   return (
     <PageShell>
@@ -188,8 +219,8 @@ export default function GenerateDemandLetterPage() {
         Demand Letter Generator
       </h1>
       <p className="mt-4 max-w-3xl text-lg leading-relaxed text-slate-600">
-        Complete the guided form below. Your document is generated from a
-        fixed template — no raw AI drafting — and downloads as a PDF.
+        Complete the guided form below. Your document is generated from a fixed
+        template — no raw AI drafting — and downloads as a PDF.
       </p>
 
       {draftRestored ? (
@@ -342,7 +373,7 @@ export default function GenerateDemandLetterPage() {
             {saveState === "saved" ? "Draft saved." : ""}
           </p>
 
-          <div className="mt-4">
+          <div className="mt-4 space-y-3">
             <Button
               onClick={handleGenerate}
               className="btn-gradient-primary h-[52px] w-full rounded-full px-8 text-[15px] font-semibold"
@@ -350,10 +381,19 @@ export default function GenerateDemandLetterPage() {
               <Download className="h-4 w-4" aria-hidden="true" />
               Download PDF
             </Button>
+            <Button
+              onClick={handleDocx}
+              variant="outline"
+              className="h-[48px] w-full rounded-full px-8 text-[15px] font-semibold"
+            >
+              <FileDown className="h-4 w-4" aria-hidden="true" />
+              Download DOCX
+            </Button>
             {generated ? (
               <div className="mt-4">
                 <p className="text-xs font-medium text-emerald-700">
-                  Document generated and added to your history.
+                  Document generated with verified legal references and added to
+                  your history.
                 </p>
                 <Feedback context="document" />
               </div>
@@ -363,7 +403,7 @@ export default function GenerateDemandLetterPage() {
 
         {/* Live preview */}
         <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-          <p className="mb-6 flex items-center justify-center gap-2 text-sm font-semibold uppercase tracking-widest text-slate-500">
+          <p className="mb-6 flex items-center justify-center gap-2 text-sm font-semibold tracking-widest text-slate-500 uppercase">
             <FileText className="h-4 w-4" aria-hidden="true" />
             Live preview
           </p>
@@ -375,9 +415,7 @@ export default function GenerateDemandLetterPage() {
             <p>
               Dear{" "}
               {form.recipient || (
-                <span className="italic text-slate-400">
-                  [Recipient Name]
-                </span>
+                <span className="text-slate-400 italic">[Recipient Name]</span>
               )}
               ,
             </p>
@@ -389,17 +427,17 @@ export default function GenerateDemandLetterPage() {
               {form.sender ? (
                 <strong>{form.sender}</strong>
               ) : (
-                <span className="italic text-slate-400">[Your Name]</span>
+                <span className="text-slate-400 italic">[Your Name]</span>
               )}{" "}
               (telephone:{" "}
               {form.phone || (
-                <span className="italic text-slate-400">[phone]</span>
+                <span className="text-slate-400 italic">[phone]</span>
               )}
               ), formally demand the sum of{" "}
               {form.amount ? (
                 <strong>KES {form.amount}</strong>
               ) : (
-                <span className="italic text-slate-400">[Amount]</span>
+                <span className="text-slate-400 italic">[Amount]</span>
               )}{" "}
               owed to me in respect of {form.issue.toLowerCase()}.
             </p>
@@ -407,7 +445,7 @@ export default function GenerateDemandLetterPage() {
               {form.dueDate ? (
                 `Payment was due on ${form.dueDate}.`
               ) : (
-                <span className="italic text-slate-400">
+                <span className="text-slate-400 italic">
                   Payment was due on 1 September 2026 (sample date — enter the
                   actual due date).
                 </span>
@@ -415,8 +453,8 @@ export default function GenerateDemandLetterPage() {
             </p>
             <p>The action required of you is: {form.action}.</p>
             <p>
-              Please comply within {form.deadline || "7"} days of receiving
-              this letter.
+              Please comply within {form.deadline || "7"} days of receiving this
+              letter.
             </p>
             <p>
               If the matter remains unresolved within the stated deadline, I
@@ -429,18 +467,20 @@ export default function GenerateDemandLetterPage() {
               {form.sender ? (
                 <strong>{form.sender}</strong>
               ) : (
-                <span className="italic text-slate-400">[Your Name]</span>
+                <span className="text-slate-400 italic">[Your Name]</span>
               )}
             </p>
           </div>
         </div>
       </div>
 
+      <LegalGrounding grounded={grounded} />
+
       <p className="mt-8 max-w-3xl text-sm leading-relaxed text-slate-500">
         This document is generated from a fixed HAKI AI template (template-based
-        filling only). HAKI AI provides general legal information only — it
-        does not provide legal advice or create a lawyer-client relationship.
+        filling only). HAKI AI provides general legal information only — it does
+        not provide legal advice or create a lawyer-client relationship.
       </p>
     </PageShell>
-  );
+  )
 }

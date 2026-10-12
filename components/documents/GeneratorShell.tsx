@@ -1,57 +1,67 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { Download, FileText, Save, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import PageShell from "@/components/layout/PageShell";
-import Feedback from "@/components/ui/feedback";
-import { downloadPdf } from "@/lib/pdf";
-import { createClient } from "@/lib/supabase-client";
+import * as React from "react"
+import {
+  Download,
+  FileText,
+  FileDown,
+  Save,
+  Trash2,
+  History,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import PageShell from "@/components/layout/PageShell"
+import Feedback from "@/components/ui/feedback"
+import LegalGrounding from "@/components/documents/LegalGrounding"
+import { downloadPdf } from "@/lib/pdf"
+import { downloadDocx } from "@/lib/docx"
+import { createClient } from "@/lib/supabase-client"
+import { generateGroundedDocument } from "@/lib/legal-generation"
 import {
   DOCUMENT_PDF_TITLES,
   DOCUMENT_TITLES,
   type GenericForm,
-} from "@/lib/documents";
+} from "@/lib/documents"
 
 export interface GeneratorField {
-  key: string;
-  label: string;
-  type?: "text" | "date" | "number" | "textarea" | "select";
-  options?: string[];
-  span?: boolean;
-  placeholder?: string;
+  key: string
+  label: string
+  type?: "text" | "date" | "number" | "textarea" | "select"
+  options?: string[]
+  span?: boolean
+  placeholder?: string
 }
 
 interface GeneratorShellProps {
-  docType: string;
-  title: string;
-  intro: string;
-  fields: GeneratorField[];
-  emptyForm: GenericForm;
-  buildParagraphs: (form: GenericForm, today: string) => string[];
-  titleForHistory: (form: GenericForm) => string;
+  docType: string
+  title: string
+  intro: string
+  fields: GeneratorField[]
+  emptyForm: GenericForm
+  buildParagraphs: (form: GenericForm, today: string) => string[]
+  titleForHistory: (form: GenericForm) => string
 }
 
 const inputClassName =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ring";
-const labelClassName = "mb-1.5 block text-sm font-medium text-slate-700";
+  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ring"
+const labelClassName = "mb-1.5 block text-sm font-medium text-slate-700"
 
 function PreviewBody({ paragraphs }: { paragraphs: string[] }) {
   return (
     <div className="space-y-3 text-sm leading-relaxed text-slate-700">
       {paragraphs.map((para, index) => {
-        if (para === "") return <div key={index} className="h-1" />;
+        if (para === "") return <div key={index} className="h-1" />
         if (para.startsWith("# ")) {
           return (
             <p key={index} className="font-semibold text-slate-900">
               {para.slice(2)}
             </p>
-          );
+          )
         }
-        return <p key={index}>{para}</p>;
+        return <p key={index}>{para}</p>
       })}
     </div>
-  );
+  )
 }
 
 export default function GeneratorShell({
@@ -63,26 +73,33 @@ export default function GeneratorShell({
   buildParagraphs,
   titleForHistory,
 }: GeneratorShellProps) {
-  const storageKey = `haki-draft-${docType}`;
-  const [form, setForm] = React.useState<GenericForm>(emptyForm);
-  const [consent, setConsent] = React.useState(false);
-  const [userId, setUserId] = React.useState<string | null>(null);
-  const [draftRestored, setDraftRestored] = React.useState(false);
-  const [saveState, setSaveState] = React.useState<"" | "saved">("");
-  const [generated, setGenerated] = React.useState(false);
-  const hydrated = React.useRef(false);
+  const storageKey = `haki-draft-${docType}`
+  const [form, setForm] = React.useState<GenericForm>(emptyForm)
+  const [consent, setConsent] = React.useState(false)
+  const [userId, setUserId] = React.useState<string | null>(null)
+  const [draftRestored, setDraftRestored] = React.useState(false)
+  const [saveState, setSaveState] = React.useState<"" | "saved">("")
+  const [generated, setGenerated] = React.useState(false)
+  const [versionNo, setVersionNo] = React.useState<number | null>(null)
+  const [versions, setVersions] = React.useState<
+    {
+      id: string
+      versionNo: number
+      generatedText: string
+      createdAt: string
+    }[]
+  >([])
+  const hydrated = React.useRef(false)
 
   React.useEffect(() => {
-    const supabase = createClient();
-    let cancelled = false;
-    const wantsRemote = new URLSearchParams(window.location.search).get(
-      "draft"
-    );
+    const supabase = createClient()
+    let cancelled = false
+    const wantsRemote = new URLSearchParams(window.location.search).get("draft")
 
     supabase.auth.getUser().then(({ data }) => {
-      const uid = data.user?.id ?? null;
-      if (cancelled) return;
-      setUserId(uid);
+      const uid = data.user?.id ?? null
+      if (cancelled) return
+      setUserId(uid)
       if (wantsRemote && uid) {
         supabase
           .from("document_requests")
@@ -90,57 +107,57 @@ export default function GeneratorShell({
           .eq("doc_type", docType)
           .maybeSingle()
           .then(({ data: remote }) => {
-            if (cancelled) return;
+            if (cancelled) return
             if (remote?.form_data) {
               setForm({
                 ...emptyForm,
                 ...(remote.form_data as GenericForm),
-              });
-              setConsent(Boolean(remote.consent));
-              setDraftRestored(true);
+              })
+              setConsent(Boolean(remote.consent))
+              setDraftRestored(true)
             }
-          });
+          })
       }
-    });
+    })
 
     try {
-      const raw = window.localStorage.getItem(storageKey);
+      const raw = window.localStorage.getItem(storageKey)
       if (raw) {
         const parsed = JSON.parse(raw) as {
-          form: GenericForm;
-          consent: boolean;
-        };
+          form: GenericForm
+          consent: boolean
+        }
         if (parsed.form) {
-          setForm({ ...emptyForm, ...parsed.form });
-          setConsent(Boolean(parsed.consent));
-          setDraftRestored(true);
+          setForm({ ...emptyForm, ...parsed.form })
+          setConsent(Boolean(parsed.consent))
+          setDraftRestored(true)
         }
       }
     } catch {
       // ignore corrupt drafts
     }
 
-    hydrated.current = true;
+    hydrated.current = true
     return () => {
-      cancelled = true;
-    };
+      cancelled = true
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   React.useEffect(() => {
-    if (!hydrated.current) return;
+    if (!hydrated.current) return
     const timer = window.setTimeout(() => {
       try {
         window.localStorage.setItem(
           storageKey,
           JSON.stringify({ form, consent, savedAt: Date.now() })
-        );
-        setSaveState("saved");
+        )
+        setSaveState("saved")
       } catch {
         // storage full/blocked — ignore
       }
       if (consent && userId) {
-        const supabase = createClient();
+        const supabase = createClient()
         void supabase.from("document_requests").upsert(
           {
             user_id: userId,
@@ -150,12 +167,12 @@ export default function GeneratorShell({
             updated_at: new Date().toISOString(),
           },
           { onConflict: "user_id,doc_type" }
-        );
+        )
       }
-    }, 1200);
-    return () => window.clearTimeout(timer);
+    }, 1200)
+    return () => window.clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, consent, userId]);
+  }, [form, consent, userId])
 
   const update =
     (key: string) =>
@@ -164,46 +181,124 @@ export default function GeneratorShell({
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
       >
     ) => {
-      setGenerated(false);
-      setForm((current) => ({ ...current, [key]: event.target.value }));
-    };
+      setGenerated(false)
+      setForm((current) => ({ ...current, [key]: event.target.value }))
+    }
 
   const today = new Date().toLocaleDateString("en-KE", {
     day: "numeric",
     month: "long",
     year: "numeric",
-  });
+  })
 
-  const paragraphs = buildParagraphs(form, today);
+  // Source-grounded document: fixed template + verified Kenyan provisions +
+  // citation validation. Recomputed live so the preview always shows the
+  // exact paragraphs that will be exported.
+  const grounded = React.useMemo(
+    () => generateGroundedDocument(docType, form, today),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [docType, JSON.stringify(form), today]
+  )
+  const paragraphs = grounded.paragraphs
+  const pdfTitle =
+    DOCUMENT_PDF_TITLES[docType] ?? DOCUMENT_TITLES[docType] ?? title
+
+  const refreshVersions = React.useCallback(async () => {
+    try {
+      const response = await fetch(
+        `/api/generate-document?docType=${encodeURIComponent(docType)}`
+      )
+      if (!response.ok) return
+      const data = (await response.json()) as {
+        versions?: {
+          id: string
+          versionNo: number
+          generatedText: string
+          createdAt: string
+        }[]
+      }
+      setVersions(data.versions ?? [])
+    } catch {
+      // version history is enhancement-only — ignore failures
+    }
+  }, [docType])
+
+  React.useEffect(() => {
+    if (userId) void refreshVersions()
+  }, [userId, refreshVersions])
 
   const handleGenerate = async () => {
-    downloadPdf(`haki-ai-${docType}.pdf`, paragraphs, {
-      title: DOCUMENT_PDF_TITLES[docType] ?? DOCUMENT_TITLES[docType] ?? title,
-    });
-    setGenerated(true);
+    downloadPdf(`haki-ai-${docType}.pdf`, paragraphs, { title: pdfTitle })
+    setGenerated(true)
     if (userId) {
       try {
-        const supabase = createClient();
+        const supabase = createClient()
         await supabase.from("documents").insert({
           user_id: userId,
           doc_type: docType,
           title: titleForHistory(form),
-          status: "Generated",
+          status:
+            grounded.validation.status === "passed"
+              ? "Generated"
+              : "Generated — citation review required",
           form_data: form,
-        });
+        })
       } catch {
         // history logging must never block the download
       }
+      // Persist a grounded version snapshot (append-only history).
+      try {
+        const response = await fetch("/api/generate-document", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ docType, form, today }),
+        })
+        if (response.ok) {
+          const data = (await response.json()) as { versionNo?: number }
+          if (typeof data.versionNo === "number") setVersionNo(data.versionNo)
+          await refreshVersions()
+        }
+      } catch {
+        // version persistence must never block the download
+      }
     }
-  };
+  }
+
+  const handleDocx = () => {
+    downloadDocx(`haki-ai-${docType}.docx`, paragraphs, { title: pdfTitle })
+  }
+
+  const handleVersionDownload = (
+    version: { generatedText: string; versionNo: number },
+    format: "pdf" | "docx"
+  ) => {
+    const versionParagraphs = version.generatedText.split("\n")
+    if (format === "pdf") {
+      downloadPdf(
+        `haki-ai-${docType}-v${version.versionNo}.pdf`,
+        versionParagraphs,
+        {
+          title: pdfTitle,
+        }
+      )
+    } else {
+      downloadDocx(
+        `haki-ai-${docType}-v${version.versionNo}.docx`,
+        versionParagraphs,
+        {
+          title: pdfTitle,
+        }
+      )
+    }
+  }
 
   const handleClearDraft = () => {
-    window.localStorage.removeItem(storageKey);
-    setForm(emptyForm);
-    setConsent(false);
-    setDraftRestored(false);
-    setSaveState("");
-  };
+    window.localStorage.removeItem(storageKey)
+    setForm(emptyForm)
+    setConsent(false)
+    setDraftRestored(false)
+    setSaveState("")
+  }
 
   return (
     <PageShell>
@@ -300,7 +395,7 @@ export default function GeneratorShell({
             {saveState === "saved" ? "Draft saved." : ""}
           </p>
 
-          <div className="mt-4">
+          <div className="mt-4 space-y-3">
             <Button
               onClick={handleGenerate}
               className="btn-gradient-primary h-[52px] w-full rounded-full px-8 text-[15px] font-semibold"
@@ -308,10 +403,20 @@ export default function GeneratorShell({
               <Download className="h-4 w-4" aria-hidden="true" />
               Download PDF
             </Button>
+            <Button
+              onClick={handleDocx}
+              variant="outline"
+              className="h-[48px] w-full rounded-full px-8 text-[15px] font-semibold"
+            >
+              <FileDown className="h-4 w-4" aria-hidden="true" />
+              Download DOCX
+            </Button>
             {generated ? (
               <div className="mt-4">
                 <p className="text-xs font-medium text-emerald-700">
-                  Document generated and added to your history.
+                  Document generated with verified legal references and added to
+                  your history.
+                  {versionNo !== null ? ` Version ${versionNo} saved.` : ""}
                 </p>
                 <Feedback context="document" />
               </div>
@@ -320,7 +425,7 @@ export default function GeneratorShell({
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-          <p className="mb-6 flex items-center justify-center gap-2 text-sm font-semibold uppercase tracking-widest text-slate-500">
+          <p className="mb-6 flex items-center justify-center gap-2 text-sm font-semibold tracking-widest text-slate-500 uppercase">
             <FileText className="h-4 w-4" aria-hidden="true" />
             Live preview
           </p>
@@ -328,12 +433,52 @@ export default function GeneratorShell({
         </div>
       </div>
 
+      <LegalGrounding grounded={grounded} />
+
+      {userId && versions.length > 0 ? (
+        <div className="mt-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+            <History className="h-4 w-4" aria-hidden="true" />
+            Version history ({versions.length})
+          </p>
+          <ul className="mt-3 space-y-2">
+            {versions.map((version) => (
+              <li
+                key={version.id}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-100 bg-slate-50/60 px-3 py-2 text-sm"
+              >
+                <span className="text-slate-700">
+                  Version {version.versionNo} ·{" "}
+                  {new Date(version.createdAt).toLocaleString("en-KE")}
+                </span>
+                <span className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleVersionDownload(version, "pdf")}
+                    className="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-white"
+                  >
+                    PDF
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleVersionDownload(version, "docx")}
+                    className="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-white"
+                  >
+                    DOCX
+                  </button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
       <p className="mt-8 max-w-3xl text-sm leading-relaxed text-slate-500">
-        This document is generated from a fixed HAKI AI template
-        (template-based filling only). HAKI AI provides general legal
-        information only — it does not provide legal advice or create a
-        lawyer-client relationship.
+        This document is generated from a fixed HAKI AI template (template-based
+        filling only) plus legal references retrieved from a verified repository
+        of Kenyan sources. HAKI AI provides general legal information only — it
+        does not provide legal advice or create a lawyer-client relationship.
       </p>
     </PageShell>
-  );
+  )
 }

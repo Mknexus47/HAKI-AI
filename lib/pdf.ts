@@ -168,18 +168,14 @@ function drawJustifiedLine(line: PositionedLine): string {
       line.text
     )}) Tj`;
   }
+  // Justified: single Tj with spaces preserved (copy-paste safe) + Tw word
+  // spacing for the extra stretch. Per-word absolute Tm without space chars
+  // joins words on text extraction ("ofKES1000", "forthe").
   const natural = textWidth(line.text, BODY_SIZE);
-  const gap = Math.max(0, (CONTENT_W - natural) / (words.length - 1));
-  let x = line.x;
-  const parts: string[] = [];
-  words.forEach((word, index) => {
-    const escaped = escapePdfText(word);
-    parts.push(
-      `1 0 0 1 ${x.toFixed(2)} ${line.y.toFixed(2)} Tm (${escaped}) Tj`
-    );
-    x += textWidth(word, BODY_SIZE) + gap;
-  });
-  return parts.join("\n");
+  const extra = Math.max(0, (CONTENT_W - natural) / (words.length - 1));
+  return `1 0 0 1 ${line.x.toFixed(2)} ${line.y.toFixed(2)} Tm ${extra.toFixed(2)} Tw (${escapePdfText(
+    line.text
+  )}) Tj\n0 Tw`;
 }
 
 function drawFooter(pageNumber: number, pageCount: number): string {
