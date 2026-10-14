@@ -1,0 +1,13 @@
+Phase,Task,Evidence,Wk1,Wk2,Wk3,Wk4,Wk5,Wk6,Wk7,Wk8,Wk9,Wk10,Wk11,Wk12
+Setup,Next.js 16 + React 19 scaffold + repo,package.json app/ lib/,X,,,,,,,,,,,
+Design,Requirements + 6-area scope + schema,lib/chat.ts supabase/schema.sql,,X,,,,,,,,,,
+Build,Ask assistant + moderation,app/ask lib/chat.ts lib/moderation.ts,,,X,X,,,,,,,,
+Build,9 generators fixed templates,lib/documents.ts app/generate-*/,,,X,X,X,,,,,,
+Build,Grounding pipeline steps 1-7,lib/legal-retrieval.ts lib/legal-generation.ts,,,,X,X,X,,,,,
+Build,PDF/DOCX + brand logo,lib/pdf.ts lib/docx.ts lib/brand-logo.ts,,,,,X,X,,,,,
+Build,i18n EN/SW + Legal Aid + Dashboard/Admin,lib/i18n.ts app/legal-aid app/dashboard app/admin,,,,,X,X,,,,,
+Deploy,Vercel live URL + PWA offline,app/layout.tsx SITE_URL public/sw.js,,,,,,X,X,,,,
+Test,Typecheck + build + grounding tests,scripts/test-grounding.ts,,,,,,,,X,X,,,
+Docs,Ch.1-4 + prelim pages + references,docs/,,,,,,,,X,X,,,
+Signoff,M1-M6 supervision signatures,Supervision Form,,,,,,,,,,X,,
+Panel,Panel demo rehearsal,Demo order Home-Ask-Generator-Sources-Aid-Dashboard,,,,,,,,,,X

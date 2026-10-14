@@ -417,7 +417,10 @@ export async function downloadPdf(
     logo = null;
   }
   const pdf = buildPdf(paragraphs, { ...options, logo });
-  const blob = new Blob([pdf], {
+  // Copy into a fresh ArrayBuffer so the Blob holds exactly these bytes.
+  const copy = new Uint8Array(pdf.length);
+  copy.set(pdf);
+  const blob = new Blob([copy.buffer as ArrayBuffer], {
     type: "application/pdf",
   });
   const url = URL.createObjectURL(blob);

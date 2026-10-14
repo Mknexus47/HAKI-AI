@@ -7,6 +7,16 @@
 //
 // Reuses the same paragraph convention as lib/pdf.ts: "# " prefixes are
 // headings, "" is spacing, everything else is body text.
+//
+// An optional brand logo (public/logo-icon.jpg) is embedded as
+// word/media/logo.jpg with a centred DrawingML paragraph above the title.
+
+import { getBrandLogo, type BrandLogo } from "./brand-logo"
+
+// Display width of the letterhead logo (matches the PDF: 54pt).
+const LOGO_DISPLAY_PT = 54;
+// EMU per point (914400 EMU = 1 inch = 72pt).
+const EMU_PER_PT = 12700;
 
 function crc32Table(): Uint32Array {
   const table = new Uint32Array(256)
