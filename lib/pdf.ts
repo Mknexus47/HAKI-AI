@@ -168,14 +168,21 @@ function drawJustifiedLine(line: PositionedLine): string {
       line.text
     )}) Tj`;
   }
-  // Justified: single Tj with spaces preserved (copy-paste safe) + Tw word
-  // spacing for the extra stretch. Per-word absolute Tm without space chars
-  // joins words on text extraction ("ofKES1000", "forthe").
+  // Justified via a TJ array (NOT the Tw word-spacing operator): literal
+  // space characters stay inside the strings (copy-paste safe) and the
+  // extra stretch is applied as per-gap glyph positioning adjustments.
+  // TJ adjustments are honoured by every PDF renderer, while Tw is
+  // mishandled by some mobile/minimal viewers (gaps collapse to ~zero
+  // width, jamming words together on justified lines).
   const natural = textWidth(line.text, BODY_SIZE);
   const extra = Math.max(0, (CONTENT_W - natural) / (words.length - 1));
-  return `1 0 0 1 ${line.x.toFixed(2)} ${line.y.toFixed(2)} Tm ${extra.toFixed(2)} Tw (${escapePdfText(
-    line.text
-  )}) Tj\n0 Tw`;
+  // TJ numbers are thousandths of an em; negative values add space.
+  const adjust = (-(extra * 1000) / BODY_SIZE).toFixed(1);
+  let tj = `(${escapePdfText(words[0])})`;
+  for (let i = 1; i < words.length; i++) {
+    tj += ` ${adjust} (${escapePdfText(` ${words[i]}`)})`;
+  }
+  return `1 0 0 1 ${line.x.toFixed(2)} ${line.y.toFixed(2)} Tm [${tj}] TJ`;
 }
 
 function drawFooter(pageNumber: number, pageCount: number): string {
@@ -255,7 +262,7 @@ export function buildPdf(paragraphs: string[], options?: PdfOptions): string {
           )}) Tj ET`
         );
       } else {
-        // Justified body text (single BT block, absolute per-word positions).
+        // Justified body text (single BT block, TJ array with spaces kept).
         parts.push(
           `0 g\nBT /F1 ${BODY_SIZE} Tf\n${drawJustifiedLine(line)}\nET`
         );
