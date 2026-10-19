@@ -22,6 +22,13 @@ const FOOTER_SIZE = 8;
 const LOGO_DISPLAY_W = 54;
 const LOGO_GAP = 12; // gap between the logo and the top of the title text
 
+// Brand colours (HAKI AI identity, see app/globals.css):
+// Haki red #E5342B for the document title, dark gold #A8871F for headings
+// (readable on white in print), mid gold #C9A227 for the footer rule.
+// Body text stays black so generated instruments remain formal and printable.
+const BRAND_RED_FILL = "0.898 0.204 0.169 rg"; // #E5342B
+const BRAND_GOLD_DARK_FILL = "0.659 0.529 0.122 rg"; // #A8871F
+const BRAND_GOLD_STROKE = "0.788 0.635 0.153 RG"; // #C9A227
 const FOOTER_LEFT = "HAKI AI - Legal Information Template";
 const FOOTER_DISCLAIMER =
   "General legal information only - not legal advice. Consult a licensed advocate of the High Court of Kenya.";
@@ -220,6 +227,7 @@ function drawFooter(pageNumber: number, pageCount: number): string {
       FOOTER_DISCLAIMER
     )}) Tj ET`,
     `0.85 g`,
+    `${BRAND_GOLD_STROKE}`,
     `0.5 w ${MARGIN_L} ${y1 + 8} m ${PAGE_W - MARGIN_R} ${y1 + 8} l S`,
     ``,
   ].join("\n");
@@ -339,13 +347,13 @@ export function buildPdf(
     for (const line of pageLines) {
       if (line.kind === "title") {
         parts.push(
-          `0 g\nBT /F2 ${TITLE_SIZE} Tf 1 0 0 1 ${line.x.toFixed(2)} ${line.y.toFixed(2)} Tm (${escapePdfText(
+          `${BRAND_RED_FILL}\nBT /F2 ${TITLE_SIZE} Tf 1 0 0 1 ${line.x.toFixed(2)} ${line.y.toFixed(2)} Tm (${escapePdfText(
             line.text
           )}) Tj ET`
         );
       } else if (line.kind === "heading") {
         parts.push(
-          `0 g\nBT /F2 ${HEADING_SIZE} Tf 1 0 0 1 ${line.x.toFixed(2)} ${line.y.toFixed(2)} Tm (${escapePdfText(
+          `${BRAND_GOLD_DARK_FILL}\nBT /F2 ${HEADING_SIZE} Tf 1 0 0 1 ${line.x.toFixed(2)} ${line.y.toFixed(2)} Tm (${escapePdfText(
             line.text
           )}) Tj ET`
         );

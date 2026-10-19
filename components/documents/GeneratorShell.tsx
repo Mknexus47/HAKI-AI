@@ -46,14 +46,21 @@ const inputClassName =
   "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ring"
 const labelClassName = "mb-1.5 block text-sm font-medium text-slate-700"
 
-function PreviewBody({ paragraphs }: { paragraphs: string[] }) {
+function PreviewBody({
+  title,
+  paragraphs,
+}: {
+  title: string
+  paragraphs: string[]
+}) {
   return (
-    <div className="space-y-3 text-sm leading-relaxed text-slate-700">
+    <div className="space-y-3 text-sm leading-relaxed text-slate-900">
+      <p className="text-center text-base font-bold text-[#e5342b]">{title}</p>
       {paragraphs.map((para, index) => {
         if (para === "") return <div key={index} className="h-1" />
         if (para.startsWith("# ")) {
           return (
-            <p key={index} className="font-semibold text-slate-900">
+            <p key={index} className="font-semibold text-[#a8871f]">
               {para.slice(2)}
             </p>
           )
@@ -429,7 +436,7 @@ export default function GeneratorShell({
             <FileText className="h-4 w-4" aria-hidden="true" />
             Live preview
           </p>
-          <PreviewBody paragraphs={paragraphs} />
+          <PreviewBody title={pdfTitle} paragraphs={paragraphs} />
         </div>
       </div>
 

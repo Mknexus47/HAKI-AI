@@ -408,7 +408,7 @@ export default function GenerateDemandLetterPage() {
             Live preview
           </p>
           <div className="space-y-3 text-sm leading-relaxed text-slate-700">
-            <p className="text-center text-base font-semibold text-slate-900">
+            <p className="text-center text-base font-semibold text-[#e5342b]">
               DEMAND LETTER
             </p>
             <p className="text-slate-500">{today}</p>

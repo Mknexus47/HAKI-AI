@@ -126,6 +126,19 @@ const SAMPLES: Array<{ docType: string; form: Record<string, string> }> = [
       swornDate: "12 October 2026",
     },
   },
+  {
+    docType: "salary-claim",
+    form: {
+      employee: "Ruth Atieno",
+      employer: "Delta Hardware Ltd",
+      jobTitle: "Sales Assistant",
+      amount: "64000",
+      dueDate: "2026-09-30",
+      issue:
+        "Unpaid salary for July to September 2026 and notice pay after termination",
+      deadline: "7",
+    },
+  },
 ]
 
 let failures = 0

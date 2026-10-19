@@ -104,6 +104,11 @@ const ADVOCATE_NOTES_BY_TYPE: Record<string, string[]> = {
   "loan-acknowledgement": [GENERIC_ADVOCATE_NOTE],
   "complaint-letter": [GENERIC_ADVOCATE_NOTE],
   "refund-letter": [GENERIC_ADVOCATE_NOTE],
+  "salary-claim": [
+    "Ask an advocate to confirm which amounts are actually due (unpaid wages, notice pay, leave pay, or service pay) for your specific contract and termination.",
+    "Unresolved employment claims may be reported to the Ministry of Labour and Social Protection or filed before the Employment and Labour Relations Court — confirm the correct route for your situation.",
+    GENERIC_ADVOCATE_NOTE,
+  ],
 }
 
 function buildReferenceParagraphs(retrieval: RetrievalResult): string[] {

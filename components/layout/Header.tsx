@@ -20,6 +20,7 @@ const navLinks: { href: string; key: TranslationKey }[] = [
   { href: "/", key: "nav.home" },
   { href: "/legal-topics", key: "nav.topics" },
   { href: "/document-generator", key: "nav.documents" },
+  { href: "/contract-analysis", key: "nav.scan" },
   { href: "/about", key: "nav.about" },
 ];
 

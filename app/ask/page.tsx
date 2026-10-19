@@ -2,19 +2,27 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Send, TreeDeciduous } from "lucide-react";
+import { ExternalLink, Send, TreeDeciduous } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PageShell from "@/components/layout/PageShell";
 import Feedback from "@/components/ui/feedback";
 import { useLanguage } from "@/components/language-provider";
 import { useOnlineStatus } from "@/components/offline-support";
 import { moderateQuestion, isTemporarilyBanned } from "@/lib/moderation";
-import { getAnswer, type ChatMessage as Message } from "@/lib/chat";
+import {
+  getAnswer,
+  type ChatMessage as Message,
+} from "@/lib/chat";
+import type { RagSource } from "@/lib/rag";
+
+interface DisplayMessage extends Message {
+  sources?: RagSource[];
+}
 
 export default function AskPage() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const online = useOnlineStatus();
-  const [messages, setMessages] = React.useState<Message[]>([]);
+  const [messages, setMessages] = React.useState<DisplayMessage[]>([]);
   const [input, setInput] = React.useState("");
   const [sending, setSending] = React.useState(false);
   const [greeting, setGreeting] = React.useState("");
@@ -60,10 +68,32 @@ export default function AskPage() {
         return;
       }
 
-      // The exact latest question is classified fresh — history is display
-      // only and never influences the answer, so a previous answer can never
-      // leak into the current response.
-      const answer = getAnswer(question);
+      // RAG path: the server retrieves verified Kenyan provisions, asks
+      // Gemini to answer only from them, and falls back to the local
+      // template if anything fails (missing key, network, LLM error).
+      // Client-side getAnswer remains the offline/error fallback below.
+      let answer: DisplayMessage;
+      try {
+        const response = await fetch("/api/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question, lang }),
+        });
+        if (!response.ok) throw new Error("ask failed");
+        const data = (await response.json()) as {
+          answer: string;
+          sources?: RagSource[];
+        };
+        answer = {
+          role: "assistant",
+          text: data.answer,
+          offerHelp: !data.sources || data.sources.length === 0,
+          sources: data.sources ?? [],
+        };
+      } catch {
+        // Offline / network failure — deterministic local template.
+        answer = getAnswer(question, lang);
+      }
       setMessages((current) => [
         ...current,
         { role: "user", text: question },
@@ -76,7 +106,7 @@ export default function AskPage() {
         { role: "user", text: question },
         {
           role: "assistant",
-          text: "Sorry — something went wrong while preparing your answer. Please try sending your question again.",
+          text: t("ask.error"),
         },
       ]);
     } finally {
@@ -132,6 +162,36 @@ export default function AskPage() {
                       </Link>
                     </p>
                   ) : null}
+                  {message.sources && message.sources.length > 0 ? (
+                    <div className="mt-3 border-t border-slate-100 pt-3">
+                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                        {lang === "sw"
+                          ? "Vyanzo vilivyopatikana (thibitisha Kenya Law)"
+                          : "Retrieved sources (verify on Kenya Law)"}
+                      </p>
+                      <ul className="space-y-1.5">
+                        {message.sources.map((source, sourceIndex) => (
+                          <li key={sourceIndex}>
+                            <a
+                              href={source.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-start gap-1.5 text-xs font-medium text-[#c0221b] hover:underline"
+                            >
+                              <ExternalLink
+                                className="mt-0.5 h-3 w-3 shrink-0"
+                                aria-hidden="true"
+                              />
+                              <span>
+                                {source.section} — {source.title} (
+                                {source.citation})
+                              </span>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
                 </div>
                 {message.text !== greeting ? (
                   <Feedback context="chat" />
@@ -142,6 +202,20 @@ export default function AskPage() {
           {isTemporarilyBanned() ? (
             <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
               {t("moderation.banned")}
+            </div>
+          ) : null}
+          {sending ? (
+            <div className="max-w-[92%]">
+              <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#e5342b]">
+                <TreeDeciduous className="h-3.5 w-3.5" aria-hidden="true" />
+                HAKI AI
+              </p>
+              <div className="inline-flex items-center gap-2 rounded-lg rounded-tl-sm border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-[#e5342b]" />
+                {lang === "sw"
+                  ? "Inatafuta vyanzo vya kisheria…"
+                  : "Searching verified legal sources…"}
+              </div>
             </div>
           ) : null}
         </div>

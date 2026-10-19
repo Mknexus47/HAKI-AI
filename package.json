@@ -10,7 +10,8 @@
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
-    "test:grounding": "npx -y tsx scripts/test-grounding.ts"
+    "test:grounding": "npx -y tsx scripts/test-grounding.ts",
+    "test:rag": "npx -y tsx scripts/test-rag.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.14",
@@ -28,6 +29,7 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "tailwind-merge": "^2.5.4",
+    "tesseract.js": "^7.0.0",
     "tw-animate-css": "^1.0.0"
   },
   "devDependencies": {

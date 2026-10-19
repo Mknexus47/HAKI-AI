@@ -69,6 +69,13 @@ const templates: Template[] = [
     fields: "Deponent, statement of facts, place, date",
     href: "/generate-affidavit",
   },
+  {
+    name: "Salary / Final Pay Claim",
+    description:
+      "Formally claim unpaid salary or final pay from a former employer.",
+    fields: "Employee, employer, amount, what is owed, deadline",
+    href: "/generate-salary-claim",
+  },
 ]
 
 export default function DocumentGeneratorPage() {
@@ -135,12 +142,18 @@ export default function DocumentGeneratorPage() {
         })}
       </div>
 
-      <div className="mt-10">
+      <div className="mt-10 flex flex-wrap items-center gap-4">
         <Link
           href="/generate-demand-letter"
           className="btn-gradient-primary inline-flex h-[52px] items-center rounded-full px-8 text-[15px] font-semibold"
         >
           Try the Demand Letter Generator
+        </Link>
+        <Link
+          href="/contract-analysis"
+          className="inline-flex h-[52px] items-center rounded-full border border-slate-300 px-8 text-[15px] font-semibold text-slate-700 transition-colors hover:bg-white hover:text-slate-900"
+        >
+          Scan an existing contract (OCR)
         </Link>
       </div>
     </PageShell>

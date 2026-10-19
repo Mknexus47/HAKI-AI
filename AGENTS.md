@@ -9,6 +9,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 > DO NOT restart this project from scratch. The system is ~75% built.
 > Missing work is DOCUMENTATION + DIAGRAMS, not code. Generate docs FROM the existing code (reverse-engineer), never rebuild the system.
 
+## Capability update (Oct 2026 — post-proposal alignment)
+- 10 document generators: 9 originals + `/generate-salary-claim` (salary/final-pay claim, grounded to Employment Act ss.19–20/35/41/49).
+- OCR contract scanning at `/contract-analysis` (`tesseract.js`, in-browser, `lib/ocr.ts` + `lib/clause-analysis.ts`).
+- Bilingual chat answers EN/SW (`lib/chat.ts`, `getAnswer(q, lang)`).
+- RAG Ask: `POST /api/ask` (`app/api/ask/route.ts`) → local vector index (`lib/vector-store.ts`, TF-IDF + cosine, SW→EN query expansion) → Gemini (`lib/rag.ts`, env `GEMINI_API_KEY` in `.env.local`; free key from aistudio.google.com) → answer + Kenya Law source chips. Deterministic gates (high-risk/greeting/scope) and all failures fall back to `lib/chat.ts` templates — the endpoint works with no key.
+- Tests: `npm run test:grounding` (documents) AND `npm run test:rag` (vector retrieval). Both must pass before demo.
+
 ## Kaggle ruling (important — stops confusion)
 - Kaggle + "collect data and clean it" does NOT apply to this project.
 - That instruction is for DDA/DAC analytics projects. DSE 315 for DIT/DBIT/DCF/DCS/DSE is a SYSTEM build.

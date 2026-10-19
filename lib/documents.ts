@@ -18,6 +18,7 @@ export const REFUND_LETTER_DOC_TYPE = "refund-letter"
 export const TENANCY_AGREEMENT_DOC_TYPE = "tenancy-agreement"
 export const EMPLOYMENT_CONTRACT_DOC_TYPE = "employment-contract"
 export const AFFIDAVIT_DOC_TYPE = "affidavit"
+export const SALARY_CLAIM_DOC_TYPE = "salary-claim"
 
 export type GenericForm = Record<string, string>
 
@@ -62,6 +63,7 @@ export const DOCUMENT_TITLES: Record<string, string> = {
   [TENANCY_AGREEMENT_DOC_TYPE]: "Residential Tenancy Agreement",
   [EMPLOYMENT_CONTRACT_DOC_TYPE]: "Employment Contract",
   [AFFIDAVIT_DOC_TYPE]: "Affidavit",
+  [SALARY_CLAIM_DOC_TYPE]: "Salary / Final Pay Claim",
 }
 
 export const DOCUMENT_PDF_TITLES: Record<string, string> = {
@@ -74,6 +76,7 @@ export const DOCUMENT_PDF_TITLES: Record<string, string> = {
   [TENANCY_AGREEMENT_DOC_TYPE]: "RESIDENTIAL TENANCY AGREEMENT",
   [EMPLOYMENT_CONTRACT_DOC_TYPE]: "CONTRACT OF SERVICE",
   [AFFIDAVIT_DOC_TYPE]: "AFFIDAVIT",
+  [SALARY_CLAIM_DOC_TYPE]: "SALARY / FINAL PAY CLAIM",
 }
 
 export const DOCUMENT_EDIT_PATHS: Record<string, string> = {
@@ -86,6 +89,7 @@ export const DOCUMENT_EDIT_PATHS: Record<string, string> = {
   [TENANCY_AGREEMENT_DOC_TYPE]: "/generate-tenancy-agreement",
   [EMPLOYMENT_CONTRACT_DOC_TYPE]: "/generate-employment-contract",
   [AFFIDAVIT_DOC_TYPE]: "/generate-affidavit",
+  [SALARY_CLAIM_DOC_TYPE]: "/generate-salary-claim",
 }
 
 /** Fields the user should complete; blanks are flagged, never guessed. */
@@ -130,6 +134,7 @@ export const DOCUMENT_REQUIRED_FIELDS: Record<string, string[]> = {
     "startDate",
   ],
   [AFFIDAVIT_DOC_TYPE]: ["deponent", "statement"],
+  [SALARY_CLAIM_DOC_TYPE]: ["employee", "employer", "amount", "issue", "deadline"],
 }
 
 export interface RentAckForm {
@@ -464,6 +469,42 @@ export function affidavitParagraphs(
   ]
 }
 
+export function salaryClaimParagraphs(
+  form: GenericForm,
+  today: string
+): string[] {
+  const employee = form.employee || "[Employee Name]"
+  const employer = form.employer || "[Employer Name]"
+  const jobTitle = form.jobTitle || "[Job title]"
+  const issue =
+    form.issue ||
+    "[Description of what is owed, e.g. unpaid March 2026 salary and notice pay]"
+  const amount = form.amount || "[Amount]"
+  const dueDate = form.dueDate || "[Date payment was due]"
+  const deadline = form.deadline || "7"
+  return [
+    today,
+    "",
+    "# RE: CLAIM FOR UNPAID SALARY / FINAL PAY",
+    "",
+    `Dear ${employer},`,
+    "",
+    `I, ${employee}, formerly employed as ${jobTitle}, hereby formally claim the sum of KES ${amount} owed to me by ${employer}.`,
+    `The amount claimed is made up as follows: ${issue}.`,
+    `Payment was due on ${dueDate}. Despite the due date passing, the amount has not been paid.`,
+    "",
+    "I request that the outstanding amount be paid in full within " +
+      `${deadline} days of your receipt of this letter.`,
+    "",
+    "I have kept my employment contract, payslips, and related messages as records of the amounts due. If the matter remains unresolved within the stated deadline, I reserve the right to report it to the Ministry of Labour and Social Protection and to pursue any other remedy available under Kenyan employment law.",
+    "",
+    "Yours faithfully,",
+    employee,
+    "",
+    "DISCLAIMER: This document was generated from a fixed HAKI AI template and provides general legal information only. It does not constitute legal advice and does not create a lawyer-client relationship.",
+  ]
+}
+
 export function buildParagraphsForDoc(
   docType: string,
   form: GenericForm,
@@ -486,6 +527,8 @@ export function buildParagraphsForDoc(
       return employmentContractParagraphs(form, today)
     case AFFIDAVIT_DOC_TYPE:
       return affidavitParagraphs(form, today)
+    case SALARY_CLAIM_DOC_TYPE:
+      return salaryClaimParagraphs(form, today)
     case DEMAND_LETTER_DOC_TYPE:
     default:
       return demandLetterParagraphs(

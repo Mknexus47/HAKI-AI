@@ -4,6 +4,7 @@ const en = {
   "nav.home": "Home",
   "nav.topics": "Legal Topics",
   "nav.documents": "Document Generator",
+  "nav.scan": "Scan Contract",
   "nav.about": "About",
   "nav.ask": "Ask a Question",
   "nav.blog": "Blog",
@@ -34,6 +35,8 @@ const en = {
     "Hello — ask me a legal information question in plain English, for example: \"What are my rights as a tenant?\"",
   "ask.offline":
     "Chat unavailable offline. View saved documents/topics instead.",
+  "ask.error":
+    "Sorry — something went wrong while preparing your answer. Please try sending your question again.",
   "ask.disclaimer":
     "Responses are educational only. For serious matters, consult a licensed advocate of the High Court of Kenya.",
   "feedback.title": "Was this helpful?",
@@ -80,6 +83,7 @@ const sw: Record<TranslationKey, string> = {
   "nav.home": "Nyumbani",
   "nav.topics": "Mada za Kisheria",
   "nav.documents": "Kizalishaji Hati",
+  "nav.scan": "Changanua Mkataba",
   "nav.about": "Kuhusu",
   "nav.ask": "Uliza Swali",
   "nav.blog": "Blogu",
@@ -110,6 +114,8 @@ const sw: Record<TranslationKey, string> = {
     "Karibu — uliza swali la taarifa za kisheria kwa lugha rahisi, mfano: \"Ni haki gani nina kama mpangaji?\"",
   "ask.offline":
     "Mazungumzo hayapatikani bila mtandao. Angalia hati/mada ulizohifadhi badala yake.",
+  "ask.error":
+    "Samahani — kuna hitilafu iliyotokea wakati wa kuandaa jibu lako. Tafadhali jaribu kutuma swali lako tena.",
   "ask.disclaimer":
     "Majibu ni ya kielimu tu. Kwa masuala mazito, wasiliana na Advocate wa Mahakama Kuu ya Kenya aliyeidhinishwa.",
   "feedback.title": "Je, hii ilisaidia?",
