@@ -38,7 +38,7 @@ const SYSTEM_INSTRUCTION: Record<Language, string> = {
     "Answer ONLY using the VERIFIED SOURCES provided in the user message. Every section, article, or Act you mention must appear verbatim in those sources. " +
     "If the sources do not cover the question, say plainly that HAKI AI could not verify an answer from its repository of Kenyan legal materials and direct the user to a licensed advocate of the High Court of Kenya or the Legal Aid Directory. " +
     "Never invent sections, articles, case names, quotations, or deadlines. " +
-    "Answer in plain language (no legalese where avoidable), in no more than about 180 words, and end with the exact sentence: \"This is general legal information, not legal advice.\"",
+    "Answer in plain language (no legalese where avoidable), in no more than about 180 words, in plain text without markdown, asterisks, or bullet symbols, and end with the exact sentence: \"This is general legal information, not legal advice.\"",
   sw:
     "Wewe ni HAKI AI, msaidizi wa taarifa za KISHERIA wa Kenya. Unatoa taarifa za kisheria za ujumla tu — kamwe si ushauri wa kisheria, wala uhusiano wa wakili na mteja. " +
     "Jibu UKITUMIA tu VYANZO VILIVYOTHIBITISHA vilivyotolewa kwenye ujumbe wa mtumiaji. Kila sehemu, ibara, au sheria utakayotaja lazima ionekane hapo hapo kwenye vyanzo hivyo. " +
@@ -91,10 +91,11 @@ export async function generateWithGemini(
   const apiKey = getApiKey()
   if (!apiKey || hits.length === 0) return null
 
-  const model = process.env.GEMINI_MODEL?.trim() || "gemini-3.8-flash"
-  const endpoint =
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent` +
-    `?key=${encodeURIComponent(apiKey)}`
+  const primaryModel = process.env.GEMINI_MODEL?.trim() || "gemini-3.5-flash"
+  // Model availability on the free tier changes without notice (some models
+  // answer with 404 or stall), so a single fast fallback keeps the demo
+  // resilient before giving up and returning null.
+  const models = [primaryModel, "gemini-3.1-flash-lite"]
 
   const userMessage =
     "VERIFIED SOURCES (the only legal material you may use):\n\n" +
@@ -102,39 +103,56 @@ export async function generateWithGemini(
     "\n\n---\nUSER QUESTION: " +
     question.trim()
 
-  try {
-    const timeout =
-      typeof AbortSignal.timeout === "function"
-        ? AbortSignal.timeout(20_000)
-        : undefined
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      signal: signal ?? timeout,
-      body: JSON.stringify({
-        systemInstruction: {
-          parts: [{ text: SYSTEM_INSTRUCTION[lang] }],
-        },
-        contents: [{ role: "user", parts: [{ text: userMessage }] }],
-        generationConfig: {
-          temperature: 0.15,
-          maxOutputTokens: 2048,
-          // Gemini 3.x spends output budget on internal "thinking", which
-          // truncated visible answers at 700 tokens — disable it so the
-          // whole answer lands in the response.
-          thinkingConfig: { thinkingBudget: 0 },
-        },
-      }),
-    })
-    if (!response.ok) return null
-    const data = (await response.json()) as {
-      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>
+  for (const model of models) {
+    const endpoint =
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent` +
+      `?key=${encodeURIComponent(apiKey)}`
+    try {
+      const timeout =
+        typeof AbortSignal.timeout === "function"
+          ? AbortSignal.timeout(45_000)
+          : undefined
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: signal ?? timeout,
+        body: JSON.stringify({
+          systemInstruction: {
+            parts: [{ text: SYSTEM_INSTRUCTION[lang] }],
+          },
+          contents: [{ role: "user", parts: [{ text: userMessage }] }],
+          generationConfig: {
+            temperature: 0.15,
+            maxOutputTokens: 2048,
+            // Gemini 3.x spends output budget on internal "thinking", which
+            // truncated visible answers at 700 tokens — disable it so the
+            // whole answer lands in the response.
+            thinkingConfig: { thinkingBudget: 0 },
+          },
+        }),
+      })
+      if (!response.ok) {
+        // Log status only — never log the endpoint (it carries the API key).
+        console.warn(
+          `[haki-rag] Gemini model ${model} failed with HTTP ${response.status}.`
+        )
+        continue
+      }
+      const data = (await response.json()) as {
+        candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>
+      }
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
+      if (text && text.length > 0) return text
+    } catch (error) {
+      // Log the error name only — messages may echo the URL (and the key).
+      console.warn(
+        `[haki-rag] Gemini model ${model} error:`,
+        error instanceof Error ? error.name : "unknown"
+      )
     }
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
-    return text && text.length > 0 ? text : null
-  } catch {
-    return null
   }
+
+  return null
 }
 
 /** Retrieve provisions relevant to a free-text chat question. */

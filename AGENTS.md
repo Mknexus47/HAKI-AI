@@ -39,10 +39,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - NOT DONE: formal functional test table (test-case ID, input, expected, actual, pass/fail screenshots); `npm run typecheck` + `npm run lint` + `npm run build` clean proof.
 - HOW TO DO: run `npm run typecheck; npm run lint; npm run build; npm run test:grounding`, paste outputs into Ch.3 test table; test each of the 9 generators + Ask in-scope/out-of-scope + high-risk refusal; screenshot results. Commit all `app/api/` + `lib/legal-*` untracked files first (see git status). Get M3 sign-off.
 
-### M4 — Dev, Testing & DB Integration Part II — CODE DONE, INTEGRATION PROOF MISSING
+### M4 — Dev, Testing & DB Integration Part II — LIVE DB VERIFIED, DEMO LEFT
 - DONE (evidence): `lib/supabase-client.ts`, `lib/supabase-server.ts`, `supabase/migrations/20260925235900_haki_ai_mvp_schema.sql`, `20261012000000_legal_grounding.sql`; RLS policies in schema; dashboard (`app/dashboard/page.tsx`), drafts save/resume, admin (`app/admin/page.tsx`).
-- NOT DONE: proof that live Supabase project has migrations applied + seeded `legal_sources`; integration test (generate doc → row in `document_generations` → version in `document_versions`); uncommitted changes still in git status (MUST commit).
-- HOW TO DO: `npx supabase db push` or run `schema.sql` in dashboard SQL editor; insert seed sources; demo save-draft → history → delete while signed in; screenshot Supabase Table Editor rows. Get M4 sign-off.
+- VERIFIED Oct 2026: live project `htdjeeqdmsojgescanix` has all tables, auth healthy, `legal_sources` = 7 rows, `legal_provisions` = 21 rows; public read works with the publishable key in `.env.local`; `GET /api/legal-sources` returns DB data.
+- REMAINING: run `supabase/sql/sync-dataset-2026-10-20.sql` in the Supabase SQL editor to upsert the 22nd provision (`emp-s19-20-payment`, added Oct 2026) + updated keywords/docTypes (admin-write RLS blocks the publishable key; regenerate the file with `npx tsx scripts/generate-dataset-sql.ts` after repo edits). Then demo save-draft → history → delete while signed in and screenshot Table Editor rows.
+- HOW TO DO: paste the SQL file in dashboard SQL editor; sign in via the app, generate one document, confirm rows in `document_generations` + `document_versions`. Get M4 sign-off.
 
 ### M5 — Deployment & Preliminary Docs — HALF DONE
 - DONE (evidence): `netlify.toml` present, `SITE_URL` set, PWA `public/manifest.json` + `sw.js`, offline page `app/offline/page.tsx`.

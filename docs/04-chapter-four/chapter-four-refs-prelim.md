@@ -23,12 +23,17 @@ HAKI AI ships as a Next.js 16 + React 19 PWA (48 routes, `npm run build` clean) 
 3. USSD/SMS fallback for offline users; more Kiswahili coverage.
 4. Pin `eslint` compatible with `eslint-config-next` and re-run lint gate.
 
-## References (APA, starter)
-- Pressman, R. S., & Maxim, B. R. (2020). *Software engineering: A practitioner's approach* (9th ed.). McGraw-Hill. (SDLC Ch.1–4 structure)
-- Farley, D. (2021). *Modern software engineering*. Addison-Wesley. (CI: typecheck/build/test gates)
-- Shelly, G. B., Cashman, T. J., & Rosenblatt, H. J. (2019). *Systems analysis and design* (12th ed.). Cengage. (Use-case/ERD/sequence Ch.2)
-- National Council for Law Reporting. (2010–2024). *Kenya Law* — Constitution 2010; Employment Act 2007; Consumer Protection Act 2012 (Cap. 501); Law of Contract Act (Cap. 23); Rent Restriction Act (Cap. 296); Landlord and Tenant (Shops, Hotels and Catering Establishments) Act (Cap. 301); Oaths and Statutory Declarations Act (Cap. 15). https://kenyalaw.org (full URLs in `lib/legal-sources.ts` + `docs/dataset/legal_sources.csv`)
-- Supabase docs; Next.js 16 docs (`node_modules/next/dist/docs/`); Vercel docs (deployment M5).
+## References (APA, full list)
+Full APA 7 list with in-text placement map: **`docs/04-chapter-four/references.md`**
+(legislation: 7 Acts with Kenya Law URLs; books/articles: Pressman & Maxim 2020,
+Farley 2021, Tilley & Rosenblatt 2017, Lewis et al. 2020, Smith 2007; reports:
+NCAJ 2024, World Justice Project 2019; software docs: Next.js, Supabase,
+Tesseract.js, Gemini API).
+
+Correction: the systems-analysis text is **Tilley, S., & Rosenblatt, H. J.
+(2017). *Systems analysis and design* (11th ed.). Cengage Learning** — the
+"Shelly Cashman Series" branding carried over from earlier editions, so do not
+cite "Shelly et al. 2019".
 
 ## Preliminary pages (M5 — paste into department template)
 Cover (title HAKI AI, DSE 315 Computer Systems Project, Zetech University, student name/adm, supervisor, Oct 2026) → Declaration → Dedication → Acknowledgement → Abstract (150 words: problem, 5 objectives, 7-Act grounding, 48-route build, all grounding tests pass, 6-area scope) → TOC → List of Figures (use-case, Ask sequence, Generate sequence, ERD, 5 wireframes, Gantt) → List of Tables (FR-1..FR-11, TC-Ask/Gen, budget) → Abbreviations (RAG, RLS, PWA, EN/SW, eKLR).
