@@ -21,7 +21,7 @@ const OCR_STATUS_LABELS: Record<string, string> = {
 };
 
 export default function ContractAnalysisPage() {
-  const { t, lang } = useLanguage();
+  const { lang } = useLanguage();
   const online = useOnlineStatus();
   const [file, setFile] = React.useState<File | null>(null);
   const [text, setText] = React.useState("");

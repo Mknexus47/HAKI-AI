@@ -103,7 +103,6 @@ export default function GenerateDemandLetterPage() {
     return () => {
       cancelled = true
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Debounced auto-save (1.2s after the last keystroke).
@@ -158,8 +157,7 @@ export default function GenerateDemandLetterPage() {
         form as unknown as Record<string, string>,
         today
       ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [JSON.stringify(form), today]
+    [form, today]
   )
 
   const handleGenerate = async () => {

@@ -77,7 +77,6 @@ export default function GeneratorShell({
   intro,
   fields,
   emptyForm,
-  buildParagraphs,
   titleForHistory,
 }: GeneratorShellProps) {
   const storageKey = `haki-draft-${docType}`
@@ -203,8 +202,7 @@ export default function GeneratorShell({
   // exact paragraphs that will be exported.
   const grounded = React.useMemo(
     () => generateGroundedDocument(docType, form, today),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [docType, JSON.stringify(form), today]
+    [docType, form, today]
   )
   const paragraphs = grounded.paragraphs
   const pdfTitle =

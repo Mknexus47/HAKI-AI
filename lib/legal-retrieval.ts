@@ -47,47 +47,6 @@ export interface RetrievalResult {
   retrievedAt: string
 }
 
-const STOPWORDS = new Set([
-  "the",
-  "a",
-  "an",
-  "and",
-  "or",
-  "of",
-  "to",
-  "in",
-  "on",
-  "for",
-  "with",
-  "my",
-  "me",
-  "i",
-  "is",
-  "are",
-  "was",
-  "be",
-  "by",
-  "as",
-  "at",
-  "from",
-  "that",
-  "this",
-  "it",
-  "please",
-  "kindly",
-  "dear",
-  "hello",
-  "hi",
-])
-
-function tokenize(text: string): string[] {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, " ")
-    .split(/\s+/)
-    .filter((token) => token.length > 2 && !STOPWORDS.has(token))
-}
-
 function trigrams(text: string): Set<string> {
   const normalized = text.toLowerCase().replace(/\s+/g, " ").trim()
   const grams = new Set<string>()
@@ -219,7 +178,6 @@ export function retrieveLegalEvidence(
 ): RetrievalResult {
   const legalIssues = identifyLegalIssues(docType, form)
   const queryText = `${docType.replace(/-/g, " ")} ${legalIssues.join(" ")} ${Object.values(form).join(" ")}`
-  const queryTokens = new Set(tokenize(queryText))
   const queryTrigrams = trigrams(queryText)
 
   const evidence: RetrievedEvidence[] = []
