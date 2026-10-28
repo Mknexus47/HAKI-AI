@@ -165,4 +165,52 @@ RLS: drafts/documents/generations owner-only; `legal_sources`/`legal_provisions`
 4. **PDF output**: centred logo (54pt, `lib/brand-logo.ts`) → TITLE → justified body (`lib/pdf.ts` TJ arrays) → authorities (Kenya Law URLs) → footer every page (template + disclaimer + page no.).
 5. **Dashboard (`/dashboard`)**: drafts (save/resume per `user_id+doc_type` unique) → history (metadata only) → delete → feedback summary.
 
-Flowcharts for draw.io: Ask flow = `lib/chat.ts` branch (in-scope / out-of-scope / high-risk); Generate flow = §2.3 steps 1–7.
+Flowcharts for draw.io: Ask flow = §2.6; Generate flow = §2.7 (trace 1:1 into draw.io shapes if the department requires non-Mermaid figures).
+
+## 2.6 Flowchart — Ask flow (`lib/chat.ts` + `lib/moderation.ts`)
+
+```mermaid
+flowchart TD
+  A([User types question EN/SW]) --> B[Language toggle resolves strings via lib/i18n.ts]
+  B --> C{lib/moderation.ts:<br/>high-risk / abuse?}
+  C -- yes --> D[Refusal + refer to licensed advocate<br/>+ Legal Aid Directory]
+  C -- no --> E{Greeting /<br/>small talk?}
+  E -- yes --> F[Greeting reply + scope reminder]
+  E -- no --> G[lib/chat.ts: match question<br/>against TOPICS - 6 areas]
+  G -- in-scope match --> H[General legal information<br/>+ authorities + disclaimer]
+  G -- no match --> I[SCOPE_ANSWER: out-of-scope<br/>+ Legal Aid redirect]
+  H --> J{Was this helpful?<br/>feedback → Supabase feedback}
+  I --> J
+  F --> J
+  D --> J
+  J --> K([End])
+```
+
+Evidence: `lib/moderation.ts` (gate order), `lib/chat.ts` (`TOPICS`, `SCOPE_ANSWER`, greeting branch), `lib/i18n.ts`, `app/ask/page.tsx` (feedback widget).
+
+## 2.7 Flowchart — Generate flow (steps 1–7)
+
+```mermaid
+flowchart TD
+  A([User opens /generate-*, fills form + consent]) --> B[Local draft restore<br/>localStorage + Supabase document_requests]
+  B --> C[POST /api/generate-document<br/>docType + form]
+  C --> D[Step 1: identify doc type + legal issues<br/>lib/legal-retrieval.ts identifyLegalIssues]
+  D --> E[Step 2: applicable law - Gate 1 authority,<br/>Gate 2 temporal, Gate 3 docType allowlist]
+  E --> F[Step 3: keyword + semantic (trigram) search<br/>keyword overlap required - semantic-only never cited]
+  F --> G[Step 4: retrieve top-3 evidence]
+  G --> H[Step 5: sufficiency decision<br/>sufficient? limitationNotice otherwise]
+  H --> I[Step 6: generate from fixed template<br/>lib/documents.ts + evidence only - lib/legal-generation.ts]
+  I --> J[Step 7: validateCitations<br/>CITATION_PATTERNS + QUOTATION_PATTERN]
+  J -- all resolve --> K[validation_status: passed]
+  J -- fabricated section/case --> L[validation_status: flagged-needs-review<br/>findings surfaced in preview]
+  K --> M[(Supabase: document_generations<br/>+ document_versions - metadata only)]
+  L --> M
+  M --> N[Preview: title + body + authorities<br/>+ missing-info + advocate notes]
+  N --> O{Download}
+  O -- PDF --> P[lib/pdf.ts downloadPdf<br/>logo 54pt + justified TJ + footer every page]
+  O -- DOCX --> Q[lib/docx.ts downloadDocx<br/>stored-ZIP OOXML]
+  P --> R([End])
+  Q --> R
+```
+
+Evidence: `lib/legal-retrieval.ts:1-15` (steps 1–5), `lib/legal-generation.ts:1-16` (steps 6–7 + `validateCitations`), `lib/documents.ts: buildParagraphsForDoc`, `app/api/generate-document/route.ts` (DB writes), `lib/pdf.ts`, `lib/docx.ts`, `scripts/test-grounding.ts`.

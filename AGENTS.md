@@ -9,6 +9,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 > DO NOT restart this project from scratch. The system is ~75% built.
 > Missing work is DOCUMENTATION + DIAGRAMS, not code. Generate docs FROM the existing code (reverse-engineer), never rebuild the system.
 
+## Capability update (Oct 28 2026 — SEO + tooling pass, commit `2ce0ab2`/`376132d`)
+- Per-page SEO metadata on every route (`lib/seo.ts` `pageMetadata`: title + canonical + OG/Twitter; `noindex` for login/signup/dashboard/admin/auth/offline); `app/sitemap.ts` + `app/robots.ts`; JSON-LD (`websiteJsonLd`) in `app/layout.tsx`.
+- `proxy.ts` (Next 16 middleware): sign-in gate for all pages, `/admin` → `/dashboard?tab=admin`, verified-crawler UA bypass so the site is indexable behind the gate.
+- Dashboard Admin tab (admin email only) via `components/dashboard/AdminPanel.tsx` + `dashboard.tab*` i18n keys.
+- Tooling: `eslint` pinned to `^9` (ESLint 10 crashes `eslint-config-next`'s bundled react plugin); `npm run lint` now 0 problems. `typecheck`, `build` (53 routes), `test:grounding`, `test:rag` all green — paste outputs from Ch.3 `docs/03-chapter-three/test-report.md`.
+
 ## Capability update (Oct 2026 — post-proposal alignment)
 - 10 document generators: 9 originals + `/generate-salary-claim` (salary/final-pay claim, grounded to Employment Act ss.19–20/35/41/49).
 - OCR contract scanning at `/contract-analysis` (`tesseract.js`, in-browser, `lib/ocr.ts` + `lib/clause-analysis.ts`).
@@ -24,35 +30,35 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Milestone status (maps to Course Outline pp.2-5)
 
-### M1 — Planning & Analysis (Ch.1: cover + Ch.1) — CODE DONE, DOC MISSING
-- DONE (evidence): working Next.js 16 + React 19 app (`app/`, `lib/`, `components/`); 9 generators live (`app/generate-*/`); Ask assistant (`app/ask/page.tsx` + `lib/chat.ts`); bilingual EN/SW (`lib/i18n.ts`); deployed URL in `app/layout.tsx` (haki-ai.vercel.app).
-- NOT DONE: `docs/01-chapter-one/` (background, problem, general + 4-5 specific objectives, scope 6 areas, functional requirements list, Gantt chart, budget table, prototype review).
-- HOW TO DO: create `docs/` folder; write Ch.1 FROM the code (objectives = Ask + Generate + Grounding + Aid Directory + Bilingual); draw Gantt in Excel (Wk1 setup, Wk2 design, Wk3-9 build, Wk7-8 deploy, Wk9-10 docs, Wk12 panel); budget = laptop + hosting (Vercel free) + Supabase free + internet. Get supervisor sign on Supervision Form M1.
+### M1 — Planning & Analysis (Ch.1: cover + Ch.1) — DOCS DONE, SIGNATURE MISSING
+- DONE (evidence): working Next.js 16 + React 19 app (`app/`, `lib/`, `components/`); 10 generators live (`app/generate-*/`); Ask assistant (`app/ask/page.tsx` + `lib/chat.ts`); bilingual EN/SW (`lib/i18n.ts`); deployed URL `https://haki-ai.vercel.app` (`lib/site.ts`).
+- DONE (docs): `docs/01-chapter-one/` — `chapter-one.md` (background, problem, general + 5 specific objectives, 6-area scope, FR-1..FR-11), `gantt.csv` (Wk1–Wk12), `budget.md`, `prototype-review.md`.
+- REMAINING: fill cover/abstract placeholders in `docs/00-preliminary/preliminary-pages.md`; get supervisor sign on Supervision Form M1.
 
-### M2 — Design & Modelling (Ch.2) — CODE DONE, DIAGRAMS MISSING
-- DONE (evidence): real UI exists (reverse-engineer from it); DB schema exists (`supabase/schema.sql`: document_requests, documents, feedback, flagged_sessions, legal_sources, legal_provisions, generations, versions + RLS).
-- NOT DONE: `docs/02-chapter-two/` with UI sketches (Home, Ask, Generator form, PDF output, Dashboard), flowchart (Ask flow, Generate flow steps 1-7), UML use-case (Actors: Visitor, Member, Admin) + sequence diagram, ERD diagram.
-- HOW TO DO: screenshot each page → trace as wireframe boxes; flowchart from `lib/legal-retrieval.ts` (steps 1-5) + `lib/legal-generation.ts` (steps 6-7); ERD from `supabase/schema.sql` foreign keys (auth.users → document_requests/documents/generations). Free tools: draw.io / dbdiagram.io. Get M2 sign-off.
+### M2 — Design & Modelling (Ch.2) — DOCS DONE, SIGNATURE MISSING
+- DONE (evidence): real UI exists (reverse-engineer from it); DB schema exists (`supabase/schema.sql`: document_requests, documents, feedback, flagged_sessions, legal_sources, legal_provisions, document_generations, document_versions + RLS).
+- DONE (docs): `docs/02-chapter-two/chapter-two.md` — Mermaid use-case (Visitor/Member/Admin), Ask sequence, Generate sequence (steps 1–7), ERD from schema FKs, Ask + Generate flowcharts (§2.6/§2.7), 5 traced UI wireframes (§2.5). Screenshot assets in `docs/screenshots/`.
+- REMAINING: export Mermaid → PNG in draw.io if the department requires non-Mermaid figures (1:1 trace); get M2 sign-off.
 
-### M3 — Dev & Testing Part I (Ch.3 start) — MOSTLY DONE, TEST REPORT MISSING
-- DONE (evidence): `lib/documents.ts` (9 fixed templates), `lib/legal-retrieval.ts`, `lib/legal-generation.ts` + `validateCitations`, `lib/pdf.ts`, `lib/docx.ts`, `lib/moderation.ts`, `scripts/test-grounding.ts` (`npm run test:grounding`).
-- NOT DONE: formal functional test table (test-case ID, input, expected, actual, pass/fail screenshots); `npm run typecheck` + `npm run lint` + `npm run build` clean proof.
-- HOW TO DO: run `npm run typecheck; npm run lint; npm run build; npm run test:grounding`, paste outputs into Ch.3 test table; test each of the 9 generators + Ask in-scope/out-of-scope + high-risk refusal; screenshot results. Commit all `app/api/` + `lib/legal-*` untracked files first (see git status). Get M3 sign-off.
+### M3 — Dev & Testing Part I (Ch.3 start) — DOCS DONE, SIGNATURE MISSING
+- DONE (evidence): `lib/documents.ts` (fixed templates), `lib/legal-retrieval.ts`, `lib/legal-generation.ts` + `validateCitations`, `lib/pdf.ts`, `lib/docx.ts`, `lib/moderation.ts`, `scripts/test-grounding.ts`, `scripts/test-rag.ts`.
+- DONE (docs): `docs/03-chapter-three/test-report.md` updated 2026-10-28 — `typecheck` clean, `lint` 0 problems (ESLint pinned to ^9, commit `376132d`), `build` 53 routes, `test:grounding` + `test:rag` all pass, manual TC table incl. SEO + live-URL rows.
+- REMAINING: capture the terminal + UI screenshots listed in `docs/04-chapter-four/appendix-checklist.md`; get M3 sign-off.
 
 ### M4 — Dev, Testing & DB Integration Part II — LIVE DB VERIFIED, DEMO LEFT
-- DONE (evidence): `lib/supabase-client.ts`, `lib/supabase-server.ts`, `supabase/migrations/20260925235900_haki_ai_mvp_schema.sql`, `20261012000000_legal_grounding.sql`; RLS policies in schema; dashboard (`app/dashboard/page.tsx`), drafts save/resume, admin (`app/admin/page.tsx`).
-- VERIFIED Oct 2026: live project `htdjeeqdmsojgescanix` has all tables, auth healthy, `legal_sources` = 7 rows, `legal_provisions` = 21 rows; public read works with the publishable key in `.env.local`; `GET /api/legal-sources` returns DB data.
-- REMAINING: run `supabase/sql/sync-dataset-2026-10-20.sql` in the Supabase SQL editor to upsert the 22nd provision (`emp-s19-20-payment`, added Oct 2026) + updated keywords/docTypes (admin-write RLS blocks the publishable key; regenerate the file with `npx tsx scripts/generate-dataset-sql.ts` after repo edits). Then demo save-draft → history → delete while signed in and screenshot Table Editor rows.
-- HOW TO DO: paste the SQL file in dashboard SQL editor; sign in via the app, generate one document, confirm rows in `document_generations` + `document_versions`. Get M4 sign-off.
+- DONE (evidence): `lib/supabase-client.ts`, `lib/supabase-server.ts`, `supabase/migrations/20260925235900_haki_ai_mvp_schema.sql`, `20261012000000_legal_grounding.sql`; RLS policies in schema; dashboard (`app/dashboard/page.tsx`), drafts save/resume, admin tab (`components/dashboard/AdminPanel.tsx`).
+- VERIFIED Oct 2026: live project `htdjeeqdmsojgescanix` has all tables, auth healthy, `legal_sources` = 7 rows, `legal_provisions` = 21→22 rows; public read works with the publishable key in `.env.local`; `GET /api/legal-sources` returns DB data.
+- VERIFIED 2026-10-28: `supabase/sql/sync-dataset-2026-10-20.sql` regenerated (`npx tsx scripts/generate-dataset-sql.ts`) — repo is in sync (7 sources, 22 provisions incl. `emp-s19-20-payment`; only the date header differed).
+- REMAINING: paste that SQL file in the Supabase dashboard SQL editor and run it (admin-write RLS blocks the publishable key); then demo save-draft → history → delete while signed in and screenshot Table Editor rows. Get M4 sign-off.
 
-### M5 — Deployment & Preliminary Docs — HALF DONE
-- DONE (evidence): `netlify.toml` present, `SITE_URL` set, PWA `public/manifest.json` + `sw.js`, offline page `app/offline/page.tsx`.
-- NOT DONE: verify live URL actually opens (fix `netlify.toml` publish — `.next` is wrong for Next; use Vercel OR `netlify-plugin-nextjs`); preliminary pages (cover, declaration, dedication, acknowledgement, abstract, TOC, list of figures/tables, abbreviations).
-- HOW TO DO: deploy via Vercel (`vercel --prod`) since `SITE_URL` is vercel; confirm `/ask` + one generator work on phone; then write prelim pages to department template. Get M5 sign-off.
+### M5 — Deployment & Preliminary Docs — NEARLY DONE, SIGNATURE MISSING
+- DONE (evidence): live URL **verified 2026-10-28** (home renders at `https://haki-ai.vercel.app`); `netlify.toml` fixed (removed wrong `publish = ".next"`; now `@netlify/plugin-nextjs` fallback, Vercel is production); PWA `public/manifest.json` + `sw.js`; offline page `app/offline/page.tsx`.
+- DONE (docs): preliminary pages drafted — `docs/00-preliminary/preliminary-pages.md` (cover, declaration, dedication, acknowledgement, abstract, TOC, list of figures, list of tables, abbreviations).
+- REMAINING: replace `[bracketed]` student/supervisor placeholders; check `/ask` + one generator on a phone; print/bind to department template; get M5 sign-off.
 
-### M6 — Documentation Consolidation (Ch.4 + refs) — NOT DONE
-- NOT DONE: `docs/04-chapter-four/` (summary, conclusions vs objectives, recommendations, limitations), references (Pressman 2022, Farley 2020, Shelly et al. 2019 + Kenya Law URLs), appendix (test screenshots, supervision form scans).
-- HOW TO DO: one paragraph per specific objective (achieved? evidence file); limitations = 6-area scope, no verbatim Act text, pending full-text check; references in APA. Final supervisor sign on Project Supervision Form before panel.
+### M6 — Documentation Consolidation (Ch.4 + refs) — DOCS DONE, APPENDIX LEFT
+- DONE (docs): `docs/04-chapter-four/chapter-four-refs-prelim.md` (summary, conclusions vs 5 objectives, limitations — lint/netlify items marked resolved, recommendations); `docs/04-chapter-four/references.md` (APA 7: legislation + books + reports + software docs); `docs/04-chapter-four/appendix-checklist.md` created.
+- REMAINING: tick off appendix checklist (screenshots, Supabase Table Editor rows, terminal outputs); scan Supervision Form M1–M6 (6 signatures = 50% of marking). Final supervisor sign before panel.
 
 ## Rules for any agent working here
 1. Never delete/rebuild `app/`, `lib/`, `supabase/`. Docs go in NEW `docs/` folder only.

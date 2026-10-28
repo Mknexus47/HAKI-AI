@@ -1,3 +1,12 @@
-﻿[build]
+﻿# Netlify fallback — production deploys on Vercel (SITE_URL = https://haki-ai.vercel.app).
+# A raw `.next` directory is NOT a valid Netlify publish dir for Next.js apps;
+# the framework plugin owns build output, hence no `publish` key below.
+# If Netlify is ever used: build command runs here, @netlify/plugin-nextjs
+# handles routing + publishing automatically (plugin must be in package.json
+# or installed from the Netlify UI).
+
+[build]
   command = "npm run build"
-  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
