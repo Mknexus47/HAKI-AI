@@ -35,6 +35,14 @@ const sections = [
   },
 ];
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Privacy Policy",
+  "Privacy policy for the HAKI AI legal information platform.",
+  "/privacy-policy"
+);
+
 export default function PrivacyPolicyPage() {
   return (
     <PageShell>

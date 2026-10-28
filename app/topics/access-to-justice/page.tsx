@@ -1,6 +1,14 @@
 import PageShell from "@/components/layout/PageShell";
 import TopicDetail from "@/components/layout/TopicDetail";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Access to Justice Basics",
+  "Where to find affordable legal help in Kenya: legal aid, pro bono services, and self-help resources.",
+  "/topics/access-to-justice"
+);
+
 export default function AccessToJusticeTopicPage() {
   return (
     <PageShell>

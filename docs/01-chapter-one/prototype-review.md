@@ -1,6 +1,6 @@
 # HAKI AI — Prototype Review (M1, traced from live routes)
 
-Live: https://haki-ai-virid.vercel.app (evidence `app/layout.tsx:12`). Build Oct 2026: 48 routes, `npm run build` clean.
+Live: https://haki-ai.vercel.app (evidence `app/layout.tsx:12`). Build Oct 2026: 48 routes, `npm run build` clean.
 
 | # | Page | Route | Evidence | Demo action |
 |---|------|-------|----------|-------------|

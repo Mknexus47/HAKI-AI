@@ -1,6 +1,14 @@
 import PageShell from "@/components/layout/PageShell";
 import TopicDetail from "@/components/layout/TopicDetail";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Consumer Rights",
+  "Basic information on consumer rights, defective goods, and refunds under Kenya Consumer Protection Act.",
+  "/topics/consumer"
+);
+
 export default function ConsumerTopicPage() {
   return (
     <PageShell>

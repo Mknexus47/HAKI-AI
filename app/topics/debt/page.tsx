@@ -1,6 +1,14 @@
 import PageShell from "@/components/layout/PageShell";
 import TopicDetail from "@/components/layout/TopicDetail";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Debt Recovery",
+  "Basic information on debt recovery, demand letters, and time bars under Kenyan law.",
+  "/topics/debt"
+);
+
 export default function DebtTopicPage() {
   return (
     <PageShell>

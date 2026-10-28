@@ -4,7 +4,7 @@
 
 **System:** HAKI AI — Legal Information and Document Assistance Platform for Kenya
 **Stack (evidence):** Next.js 16 + React 19 (`package.json`: `next@16.3.4`, `react@19.2.8`), Supabase (`lib/supabase-client.ts`, `lib/supabase-server.ts`), bilingual EN/SW (`lib/i18n.ts`), PWA (`public/manifest.json`, `public/sw.js`, `app/offline/page.tsx`)
-**Live URL (evidence `app/layout.tsx:12`):** https://haki-ai-virid.vercel.app
+**Live URL (evidence `app/layout.tsx:12`):** https://haki-ai.vercel.app
 **Repository dataset:** `lib/legal-sources.ts` (7 Kenyan Acts, Kenya Law links) + `docs/dataset/legal_sources.csv`, `docs/dataset/legal_provisions.csv` + Supabase tables (`supabase/schema.sql`, `supabase/migrations/`)
 
 ## 1.1 Background
@@ -80,7 +80,7 @@ To design and implement a cloud-hosted, source-grounded legal-information and do
 - Wk1: Project setup (Next.js 16 + React 19 scaffold, repo, Vercel link)
 - Wk2: Requirements + design (scope 6 areas, schema in `supabase/schema.sql`)
 - Wk3–Wk9: Build — Ask (`lib/chat.ts`), 9 generators (`lib/documents.ts`), grounding pipeline (`lib/legal-retrieval.ts`, `lib/legal-generation.ts`), PDF/DOCX (`lib/pdf.ts`, `lib/docx.ts`, `lib/brand-logo.ts`), i18n, Legal Aid, Dashboard/Admin
-- Wk7–Wk8: Deploy (`SITE_URL` haki-ai-virid.vercel.app in `app/layout.tsx`; `netlify.toml` present as alternative)
+- Wk7–Wk8: Deploy (`SITE_URL` haki-ai.vercel.app in `app/layout.tsx`; `netlify.toml` present as alternative)
 - Wk9–Wk10: Docs + testing (`npm run typecheck`, `npm run build`, `npm run test:grounding`, Ch.1–Ch.4 in `docs/`)
 - Wk11: Supervision signatures M1–M6 (Project Supervision Form)
 - Wk12: Panel demo (Home → Ask in-scope + refusal → Generator end-to-end + PDF → Legal Sources → Legal Aid → Dashboard)

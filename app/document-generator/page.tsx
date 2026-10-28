@@ -78,6 +78,14 @@ const templates: Template[] = [
   },
 ]
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Document Generator",
+  "Generate basic legal documents for Kenya in minutes: demand letters, agreements, affidavits, and more.",
+  "/document-generator"
+);
+
 export default function DocumentGeneratorPage() {
   return (
     <PageShell>

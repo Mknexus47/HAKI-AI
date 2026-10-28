@@ -1,6 +1,14 @@
 import PageShell from "@/components/layout/PageShell";
 import TopicDetail from "@/components/layout/TopicDetail";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Complaint Letters",
+  "How to write effective complaint letters and escalate consumer and service disputes in Kenya.",
+  "/topics/complaints"
+);
+
 export default function ComplaintsTopicPage() {
   return (
     <PageShell>

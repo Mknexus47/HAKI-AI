@@ -10,6 +10,14 @@ import PageShell from "@/components/layout/PageShell"
 import { getLegalProvisions, getLegalSources } from "@/lib/legal-store"
 import { checkSourcesForStaleness } from "@/lib/source-maintenance"
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Legal Sources",
+  "The Kenyan Acts and provisions that ground HAKI AI answers and generated documents.",
+  "/legal-sources"
+);
+
 export default async function LegalSourcesPage() {
   const [sources, provisions] = await Promise.all([
     getLegalSources(),

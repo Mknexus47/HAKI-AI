@@ -3,6 +3,14 @@ import PageShell from "@/components/layout/PageShell";
 import FeaturesSection from "@/components/layout/FeaturesSection";
 import TopicsSection from "@/components/layout/TopicsSection";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Features",
+  "Explore HAKI AI features: AI legal assistant, document generation, contract scanning, and bilingual English/Swahili support.",
+  "/features"
+);
+
 export default function FeaturesPage() {
   return (
     <PageShell>

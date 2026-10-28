@@ -7,6 +7,7 @@ import {
   FileText,
   LayoutDashboard,
   Pencil,
+  ShieldCheck,
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import PageShell from "@/components/layout/PageShell";
 import { createClient } from "@/lib/supabase-client";
 import { useLanguage } from "@/components/language-provider";
 import { downloadPdf } from "@/lib/pdf";
+import AdminPanel, { ADMIN_EMAIL } from "@/components/dashboard/AdminPanel";
 import {
   DOCUMENT_EDIT_PATHS,
   DOCUMENT_PDF_TITLES,
@@ -41,18 +43,38 @@ export default function DashboardPage() {
   const { t } = useLanguage();
   const [ready, setReady] = React.useState(false);
   const [userId, setUserId] = React.useState<string | null>(null);
+  const [email, setEmail] = React.useState<string | null>(null);
+  const [tab, setTab] = React.useState<"documents" | "admin">("documents");
   const [documents, setDocuments] = React.useState<DocumentRow[]>([]);
   const [drafts, setDrafts] = React.useState<DraftRow[]>([]);
   const [filter, setFilter] = React.useState("all");
+
+  const isAdmin = email === ADMIN_EMAIL;
+
+  const selectTab = (next: "documents" | "admin") => {
+    setTab(next);
+    window.history.replaceState(
+      null,
+      "",
+      next === "admin" ? "/dashboard?tab=admin" : "/dashboard"
+    );
+  };
 
   React.useEffect(() => {
     const supabase = createClient();
     let cancelled = false;
 
+    if (
+      new URLSearchParams(window.location.search).get("tab") === "admin"
+    ) {
+      setTab("admin");
+    }
+
     supabase.auth.getUser().then(async ({ data }) => {
       const uid = data.user?.id ?? null;
       if (cancelled) return;
       setUserId(uid);
+      setEmail(data.user?.email ?? null);
       if (!uid) {
         setReady(true);
         return;
@@ -130,7 +152,49 @@ export default function DashboardPage() {
         {t("dashboard.title")}
       </h1>
 
-      {/* Continue Draft */}
+      {/* Tabs — My Documents + Admin (only for the admin account) */}
+      <div className="mt-6 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => selectTab("documents")}
+          className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+            tab === "documents"
+              ? "bg-slate-900 text-white"
+              : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+          }`}
+        >
+          <LayoutDashboard
+            className="mr-1.5 inline h-4 w-4"
+            aria-hidden="true"
+          />
+          {t("dashboard.tabDocuments")}
+        </button>
+        {isAdmin ? (
+          <button
+            type="button"
+            onClick={() => selectTab("admin")}
+            className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              tab === "admin"
+                ? "bg-slate-900 text-white"
+                : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+            }`}
+          >
+            <ShieldCheck
+              className="mr-1.5 inline h-4 w-4"
+              aria-hidden="true"
+            />
+            {t("dashboard.tabAdmin")}
+          </button>
+        ) : null}
+      </div>
+
+      {tab === "admin" && isAdmin ? (
+        <section className="mt-8">
+          <AdminPanel />
+        </section>
+      ) : (
+        <>
+          {/* Continue Draft */}
       <section className="mt-8">
         <h2 className="text-lg font-semibold text-slate-900">
           {t("dashboard.drafts")}
@@ -262,7 +326,9 @@ export default function DashboardPage() {
           text is never kept on the server, and documents are re-rendered
           locally when you download.
         </p>
-      </section>
+        </section>
+      </>
+      )}
     </PageShell>
   );
 }

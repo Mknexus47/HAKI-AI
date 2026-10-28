@@ -1,5 +1,13 @@
 import { WifiOff } from "lucide-react";
 import PageShell from "@/components/layout/PageShell";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "You Are Offline",
+  "HAKI AI could not reach the network. Saved documents and previously visited legal topics are still available.",
+  "/offline",
+  { noindex: true }
+);
 
 export default function OfflinePage() {
   return (

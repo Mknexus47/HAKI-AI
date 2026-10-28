@@ -78,6 +78,14 @@ const topics: Topic[] = [
   },
 ];
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Legal Topics Index",
+  "Browse all legal topic guides available on HAKI AI.",
+  "/legal-topics"
+);
+
 export default function LegalTopicsPage() {
   return (
     <PageShell>

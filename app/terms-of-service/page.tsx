@@ -35,6 +35,14 @@ const sections = [
   },
 ];
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Terms of Service",
+  "Terms of service for the HAKI AI legal information platform.",
+  "/terms-of-service"
+);
+
 export default function TermsOfServicePage() {
   return (
     <PageShell>

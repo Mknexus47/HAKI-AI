@@ -22,6 +22,14 @@ const values = [
   },
 ];
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "About HAKI AI",
+  "HAKI AI is an AI-powered legal information and document assistance platform for Kenya, built to simplify access to justice.",
+  "/about"
+);
+
 export default function AboutPage() {
   return (
     <PageShell>

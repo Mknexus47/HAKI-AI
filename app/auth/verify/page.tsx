@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import PageShell from "@/components/layout/PageShell";
 import { createClient } from "@/lib/supabase-client";
+import { safeNextPath } from "@/lib/auth-redirect";
 
 type Status = "loading" | "pending" | "verified" | "error";
 
@@ -21,6 +22,7 @@ export default function AuthVerifyPage() {
   const [status, setStatus] = React.useState<Status>("loading");
   const [error, setError] = React.useState<string | null>(null);
   const [email, setEmail] = React.useState<string | null>(null);
+  const [nextPath, setNextPath] = React.useState("/");
   const [resendState, setResendState] = React.useState<
     null | "sending" | "sent"
   >(null);
@@ -44,6 +46,7 @@ export default function AuthVerifyPage() {
     const oauthError =
       params.get("error_description") || params.get("error");
     const emailParam = params.get("email");
+    setNextPath(safeNextPath(params.get("next")));
 
     const init = async () => {
       if (oauthError) {
@@ -181,7 +184,7 @@ export default function AuthVerifyPage() {
               </p>
               <Button
                 onClick={() => {
-                  router.push("/");
+                  router.push(safeNextPath(nextPath));
                   router.refresh();
                 }}
                 className="btn-gradient-primary mt-6 h-[48px] rounded-full px-8 text-[15px] font-semibold"

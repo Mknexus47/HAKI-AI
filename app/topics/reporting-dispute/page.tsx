@@ -1,6 +1,14 @@
 import PageShell from "@/components/layout/PageShell";
 import TopicDetail from "@/components/layout/TopicDetail";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Reporting a Dispute",
+  "Where and how to report legal disputes in Kenya: police, tribunals, courts, and consumer bodies.",
+  "/topics/reporting-dispute"
+);
+
 export default function ReportingDisputeTopicPage() {
   return (
     <PageShell>

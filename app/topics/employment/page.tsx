@@ -1,6 +1,14 @@
 import PageShell from "@/components/layout/PageShell";
 import TopicDetail from "@/components/layout/TopicDetail";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Employment Basics",
+  "Basic information on employment rights, pay, leave, and termination under Kenyan law.",
+  "/topics/employment"
+);
+
 export default function EmploymentTopicPage() {
   return (
     <PageShell>

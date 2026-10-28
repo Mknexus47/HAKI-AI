@@ -1,6 +1,14 @@
 import PageShell from "@/components/layout/PageShell";
 import TopicDetail from "@/components/layout/TopicDetail";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Small Business Agreements",
+  "Basic information on service agreements, contracts, and records for small businesses in Kenya.",
+  "/topics/business"
+);
+
 export default function BusinessTopicPage() {
   return (
     <PageShell>

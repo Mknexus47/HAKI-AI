@@ -1,6 +1,14 @@
 import PageShell from "@/components/layout/PageShell";
 import TopicDetail from "@/components/layout/TopicDetail";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Tenant and Landlord Rights",
+  "Basic information on tenancy agreements, deposits, rent, and the eviction process under Kenyan law.",
+  "/topics/tenant"
+);
+
 export default function TenantTopicPage() {
   return (
     <PageShell>

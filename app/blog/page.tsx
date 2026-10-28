@@ -22,6 +22,14 @@ const posts = [
   },
 ];
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata(
+  "Blog",
+  "Articles and updates on legal information, everyday rights, and documents in Kenya.",
+  "/blog"
+);
+
 export default function BlogPage() {
   return (
     <PageShell>

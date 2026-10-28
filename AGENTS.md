@@ -25,7 +25,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Milestone status (maps to Course Outline pp.2-5)
 
 ### M1 — Planning & Analysis (Ch.1: cover + Ch.1) — CODE DONE, DOC MISSING
-- DONE (evidence): working Next.js 16 + React 19 app (`app/`, `lib/`, `components/`); 9 generators live (`app/generate-*/`); Ask assistant (`app/ask/page.tsx` + `lib/chat.ts`); bilingual EN/SW (`lib/i18n.ts`); deployed URL in `app/layout.tsx` (haki-ai-virid.vercel.app).
+- DONE (evidence): working Next.js 16 + React 19 app (`app/`, `lib/`, `components/`); 9 generators live (`app/generate-*/`); Ask assistant (`app/ask/page.tsx` + `lib/chat.ts`); bilingual EN/SW (`lib/i18n.ts`); deployed URL in `app/layout.tsx` (haki-ai.vercel.app).
 - NOT DONE: `docs/01-chapter-one/` (background, problem, general + 4-5 specific objectives, scope 6 areas, functional requirements list, Gantt chart, budget table, prototype review).
 - HOW TO DO: create `docs/` folder; write Ch.1 FROM the code (objectives = Ask + Generate + Grounding + Aid Directory + Bilingual); draw Gantt in Excel (Wk1 setup, Wk2 design, Wk3-9 build, Wk7-8 deploy, Wk9-10 docs, Wk12 panel); budget = laptop + hosting (Vercel free) + Supabase free + internet. Get supervisor sign on Supervision Form M1.
 

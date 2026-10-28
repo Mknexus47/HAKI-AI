@@ -8,6 +8,7 @@ import { GoogleIcon } from "@/components/ui/google-icon";
 import { Button } from "@/components/ui/button";
 import PageShell from "@/components/layout/PageShell";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase-client";
+import { safeNextPath } from "@/lib/auth-redirect";
 
 const inputClassName =
   "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ring";
@@ -19,6 +20,15 @@ export default function SignupPage() {
   const [notice, setNotice] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [googleLoading, setGoogleLoading] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [nextPath, setNextPath] = React.useState("/");
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setNextPath(safeNextPath(params.get("next")));
+    const prefilled = params.get("email");
+    if (prefilled) setEmail(prefilled);
+  }, []);
 
   const handleGoogle = async () => {
     setError(null);
@@ -85,7 +95,7 @@ export default function SignupPage() {
     }
 
     if (data.session) {
-      router.push("/");
+      router.push(safeNextPath(nextPath));
       router.refresh();
       return;
     }
@@ -93,7 +103,9 @@ export default function SignupPage() {
     setNotice(
       "Account created. Check your email to confirm your address, then log in."
     );
-    router.push(`/auth/verify?email=${encodeURIComponent(email)}`);
+    router.push(
+      `/auth/verify?email=${encodeURIComponent(email)}&next=${encodeURIComponent(nextPath)}`
+    );
   };
 
   return (
@@ -134,14 +146,16 @@ export default function SignupPage() {
               <label htmlFor="signup-email" className={labelClassName}>
                 Email address
               </label>
-              <input
-                id="signup-email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                className={inputClassName}
-              />
+                <input
+                  id="signup-email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  className={inputClassName}
+                />
             </div>
             <div>
               <label htmlFor="signup-password" className={labelClassName}>
@@ -193,7 +207,7 @@ export default function SignupPage() {
         <p className="mt-6 text-sm text-slate-600">
           Already have an account?{" "}
           <Link
-            href="/login"
+            href={`/login?next=${encodeURIComponent(nextPath)}`}
             className="font-medium text-slate-900 underline-offset-4 hover:underline"
           >
             Login

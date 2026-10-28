@@ -64,6 +64,8 @@ const en = {
   "dashboard.delete": "Delete",
   "dashboard.allTypes": "All types",
   "dashboard.loginRequired": "Please log in to view your dashboard.",
+  "dashboard.tabDocuments": "My Documents",
+  "dashboard.tabAdmin": "Admin",
   "offline.banner":
     "You are offline. Saved topics and documents are still available.",
   "moderation.paused":
@@ -143,6 +145,8 @@ const sw: Record<TranslationKey, string> = {
   "dashboard.delete": "Futa",
   "dashboard.allTypes": "Aina zote",
   "dashboard.loginRequired": "Tafadhali ili uone dashibodi yako.",
+  "dashboard.tabDocuments": "Hati Zangu",
+  "dashboard.tabAdmin": "Msimamizi",
   "offline.banner":
     "Uko nje ya mtandao. Mada na hati ulizohifadhi bado zinapatikana.",
   "moderation.paused":
