@@ -43,7 +43,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ### M3 — Dev & Testing Part I (Ch.3 start) — DOCS DONE, SIGNATURE MISSING
 - DONE (evidence): `lib/documents.ts` (fixed templates), `lib/legal-retrieval.ts`, `lib/legal-generation.ts` + `validateCitations`, `lib/pdf.ts`, `lib/docx.ts`, `lib/moderation.ts`, `scripts/test-grounding.ts`, `scripts/test-rag.ts`.
 - DONE (docs): `docs/03-chapter-three/test-report.md` updated 2026-10-28 — `typecheck` clean, `lint` 0 problems (ESLint pinned to ^9, commit `376132d`), `build` 53 routes, `test:grounding` + `test:rag` all pass, manual TC table incl. SEO + live-URL rows.
-- REMAINING: capture the terminal + UI screenshots listed in `docs/04-chapter-four/appendix-checklist.md`; get M3 sign-off.
+- DONE (terminal/API evidence, 2026-10-29): `docs/03-chapter-three/terminal-evidence.md` — pasted outputs of typecheck, lint, test:grounding (all PASS), test:rag (all PASS), build (53 routes), plus TC-Ask-Out + TC-Ask-HighRisk via `POST /api/ask` (deterministic gates, no key needed). Appendix checklist terminal/refusal items ticked.
+- REMAINING: UI screenshots for TC-Gen, TC-Feedback, TC-Dashboard, Admin tab; phone check; get M3 sign-off.
 
 ### M4 — Dev, Testing & DB Integration Part II — LIVE DB VERIFIED, DEMO LEFT
 - DONE (evidence): `lib/supabase-client.ts`, `lib/supabase-server.ts`, `supabase/migrations/20260925235900_haki_ai_mvp_schema.sql`, `20261012000000_legal_grounding.sql`; RLS policies in schema; dashboard (`app/dashboard/page.tsx`), drafts save/resume, admin tab (`components/dashboard/AdminPanel.tsx`).
@@ -54,11 +55,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ### M5 — Deployment & Preliminary Docs — NEARLY DONE, SIGNATURE MISSING
 - DONE (evidence): live URL **verified 2026-10-28** (home renders at `https://haki-ai.vercel.app`); `netlify.toml` fixed (removed wrong `publish = ".next"`; now `@netlify/plugin-nextjs` fallback, Vercel is production); PWA `public/manifest.json` + `sw.js`; offline page `app/offline/page.tsx`.
 - DONE (docs): preliminary pages drafted — `docs/00-preliminary/preliminary-pages.md` (cover, declaration, dedication, acknowledgement, abstract, TOC, list of figures, list of tables, abbreviations).
+- DONE (CI, 2026-10-29): `.github/workflows/deploy.yml` — verify job (typecheck + lint) then Vercel production deploy on push to main; org/project IDs match `.vercel/project.json`. One-time setup: add repo secret `VERCEL_TOKEN`, push `haki-ai/` to https://github.com/Mknexus47/HAKI-AI.
 - REMAINING: replace `[bracketed]` student/supervisor placeholders; check `/ask` + one generator on a phone; print/bind to department template; get M5 sign-off.
 
 ### M6 — Documentation Consolidation (Ch.4 + refs) — DOCS DONE, APPENDIX LEFT
 - DONE (docs): `docs/04-chapter-four/chapter-four-refs-prelim.md` (summary, conclusions vs 5 objectives, limitations — lint/netlify items marked resolved, recommendations); `docs/04-chapter-four/references.md` (APA 7: legislation + books + reports + software docs); `docs/04-chapter-four/appendix-checklist.md` created.
-- REMAINING: tick off appendix checklist (screenshots, Supabase Table Editor rows, terminal outputs); scan Supervision Form M1–M6 (6 signatures = 50% of marking). Final supervisor sign before panel.
+- REMAINING: tick off remaining appendix items (TC-Gen/Feedback/Dashboard/Admin UI screenshots, Supabase Table Editor rows, phone check); the terminal-output items are done (`docs/03-chapter-three/terminal-evidence.md`). Scan Supervision Form M1–M6 (6 signatures = 50% of marking). Final supervisor sign before panel.
 
 ## Rules for any agent working here
 1. Never delete/rebuild `app/`, `lib/`, `supabase/`. Docs go in NEW `docs/` folder only.

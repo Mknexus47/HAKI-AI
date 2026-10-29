@@ -21,16 +21,16 @@ Existing captures in `docs/screenshots/`:
 
 Still to capture (paste terminal output or DevTools screenshot):
 
-- [ ] TC-Ask-Out — out-of-scope refusal + Legal Aid redirect
-- [ ] TC-Ask-HighRisk — moderation refusal
+- [x] TC-Ask-Out — out-of-scope refusal + Legal Aid redirect (2026-10-29: `docs/03-chapter-three/terminal-evidence.md` §A.6 — `POST /api/ask` returns `reason: "out-of-scope"`)
+- [x] TC-Ask-HighRisk — moderation refusal (2026-10-29: `docs/03-chapter-three/terminal-evidence.md` §A.6 — `reason: "high-risk"`)
 - [ ] TC-Gen — one full generator run end-to-end (form → preview → PDF opened)
 - [ ] TC-Feedback — feedback row in Supabase Table Editor
 - [ ] TC-Dashboard — save draft → reload → resume → delete, plus Table Editor rows in `document_requests` / `document_generations` / `document_versions` (doubles as M4 proof)
 - [ ] Admin tab — `/dashboard?tab=admin` showing flagged sessions/feedback
-- [ ] Terminal: `npm run typecheck` (clean)
-- [ ] Terminal: `npm run lint` (0 problems)
-- [ ] Terminal: `npm run build` (53 routes)
-- [ ] Terminal: `npm run test:grounding` + `npm run test:rag` (all pass)
+- [x] Terminal: `npm run typecheck` (clean) — `docs/03-chapter-three/terminal-evidence.md` §A.1
+- [x] Terminal: `npm run lint` (0 problems) — §A.2
+- [x] Terminal: `npm run build` (53 routes) — §A.5
+- [x] Terminal: `npm run test:grounding` + `npm run test:rag` (all pass) — §A.3/§A.4
 - [ ] Phone: https://haki-ai.vercel.app `/ask` + one generator working on mobile (M5)
 
 ## Appendix B — Supervision Form scans (50% of marking)
