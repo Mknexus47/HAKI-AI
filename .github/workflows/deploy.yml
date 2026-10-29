@@ -1,0 +1,66 @@
+# Deploys haki-ai to Vercel (production) on every push to main.
+#
+# One-time setup: add a repository secret VERCEL_TOKEN
+# (Vercel → Account Settings → Tokens → Create). Org/project IDs below
+# match .vercel/project.json (project "haki-ai-fresh").
+# Push this folder to https://github.com/Mknexus47/HAKI-AI to activate.
+
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: team_Kip4SxROpPAzzz21JbGxcCOR
+      VERCEL_PROJECT_ID: prj_qgBjV7WOCaZQ1li2FrCGDO1trMyy
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Pull production environment
+        run: npx vercel pull --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Build
+        run: npx vercel build --prod --token="$VERCEL_TOKEN"
+
+      - name: Deploy
+        run: npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
