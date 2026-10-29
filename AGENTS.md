@@ -55,7 +55,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ### M5 — Deployment & Preliminary Docs — NEARLY DONE, SIGNATURE MISSING
 - DONE (evidence): live URL **verified 2026-10-28** (home renders at `https://haki-ai.vercel.app`); `netlify.toml` fixed (removed wrong `publish = ".next"`; now `@netlify/plugin-nextjs` fallback, Vercel is production); PWA `public/manifest.json` + `sw.js`; offline page `app/offline/page.tsx`.
 - DONE (docs): preliminary pages drafted — `docs/00-preliminary/preliminary-pages.md` (cover, declaration, dedication, acknowledgement, abstract, TOC, list of figures, list of tables, abbreviations).
-- DONE (CI, 2026-10-29): `.github/workflows/deploy.yml` — verify job (typecheck + lint) then Vercel production deploy on push to main; org/project IDs match `.vercel/project.json`. One-time setup: add repo secret `VERCEL_TOKEN`, push `haki-ai/` to https://github.com/Mknexus47/HAKI-AI.
+- DONE (CI, 2026-10-29): `.github/workflows/deploy.yml` — verify job (typecheck + lint) then Vercel production deploy on push to main; org/project IDs match `.vercel/project.json`. LIVE: `VERCEL_TOKEN` repo secret set, pushes to `Mknexus47/HAKI-AI` auto-deploy (runs 40869794241, 40870111036 green; actions bumped to checkout/setup-node v5).
 - REMAINING: replace `[bracketed]` student/supervisor placeholders; check `/ask` + one generator on a phone; print/bind to department template; get M5 sign-off.
 
 ### M6 — Documentation Consolidation (Ch.4 + refs) — DOCS DONE, APPENDIX LEFT
