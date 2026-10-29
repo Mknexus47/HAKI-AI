@@ -21,9 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: npm
@@ -46,9 +46,9 @@ jobs:
       VERCEL_ORG_ID: team_Kip4SxROpPAzzz21JbGxcCOR
       VERCEL_PROJECT_ID: prj_qgBjV7WOCaZQ1li2FrCGDO1trMyy
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: npm
