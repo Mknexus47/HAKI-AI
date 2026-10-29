@@ -177,7 +177,7 @@ export default function ContactPage() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 shrink-0 text-slate-400" aria-hidden="true" />
-                +254 712 345 678
+                0717023526
               </li>
               <li className="flex items-center gap-3">
                 <MapPin className="h-4 w-4 shrink-0 text-slate-400" aria-hidden="true" />
