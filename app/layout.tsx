@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   description:
     "Cloud-hosted, AI-powered legal information and document generation platform for Kenya. Not a substitute for a licensed advocate.",
   manifest: "/manifest.json",
+  alternates: {
+    canonical: SITE_URL,
+  },
   verification: {
     google: "303kwchFMijcbwNcRYamdbAFCwaBjO09_gHZTi96PPA",
   },

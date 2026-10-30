@@ -42,12 +42,20 @@ function isPublicPath(pathname: string): boolean {
   );
 }
 
+// The gate's outcome varies by cookie and user-agent, but the page cache is
+// keyed by path only. A cached 307 would keep crawlers out forever; a cached
+// 200 would hand anonymous visitors the signed-in page. Never cache it.
+function noStore(response: NextResponse): NextResponse {
+  response.headers.set("Cache-Control", "private, no-store");
+  return response;
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
   // Crawlers see the site without signing in (same content users get).
   if (CRAWLER_PATTERN.test(request.headers.get("user-agent") ?? "")) {
-    return NextResponse.next({ request });
+    return noStore(NextResponse.next({ request }));
   }
 
   // The admin panel now lives inside the dashboard (Admin tab).
@@ -55,7 +63,7 @@ export async function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     url.search = "?tab=admin";
-    return NextResponse.redirect(url);
+    return noStore(NextResponse.redirect(url));
   }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -68,12 +76,12 @@ export async function proxy(request: NextRequest) {
 
   // Auth unavailable — never lock every visitor out.
   if (!supabaseConfigured) {
-    return NextResponse.next({ request });
+    return noStore(NextResponse.next({ request }));
   }
 
   // Let search-engine crawlers index the site without a session.
   if (isSearchEngineCrawler(request.headers.get("user-agent"))) {
-    return NextResponse.next({ request });
+    return noStore(NextResponse.next({ request }));
   }
 
   let response = NextResponse.next({ request });
@@ -107,9 +115,9 @@ export async function proxy(request: NextRequest) {
     const target = safeNextPath(request.nextUrl.searchParams.get("next"));
     const targetPath = new URL(target, request.url).pathname;
     if (targetPath !== "/login" && targetPath !== "/signup") {
-      return NextResponse.redirect(new URL(target, request.url));
+      return noStore(NextResponse.redirect(new URL(target, request.url)));
     }
-    return NextResponse.redirect(new URL("/", request.url));
+    return noStore(NextResponse.redirect(new URL("/", request.url)));
   }
 
   // Every other page requires an email sign-in.
@@ -118,10 +126,10 @@ export async function proxy(request: NextRequest) {
     url.pathname = "/login";
     url.search = "";
     url.searchParams.set("next", pathname + search);
-    return NextResponse.redirect(url);
+    return noStore(NextResponse.redirect(url));
   }
 
-  return response;
+  return noStore(response);
 }
 
 export const config = {
