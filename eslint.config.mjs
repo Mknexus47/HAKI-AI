@@ -22,6 +22,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vercel build output (git-ignored; launcher .cjs files trip no-require-imports).
+    ".vercel/**",
   ]),
 ]);
 

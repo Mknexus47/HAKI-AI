@@ -26,6 +26,7 @@ import {
   retrieveForQuestion,
   toRagSources,
 } from "@/lib/rag"
+import { clientIp, rateLimit } from "@/lib/rate-limit"
 import type { Language } from "@/lib/i18n"
 
 interface AskBody {
@@ -59,6 +60,14 @@ export async function POST(request: Request) {
     return Response.json(
       { error: "question is too long (max 2000 characters)." },
       { status: 400 }
+    )
+  }
+  // Server-side abuse guard (the client-side moderation rate limit is
+  // bypassable by calling this endpoint directly). 15 requests/minute/IP.
+  if (!rateLimit(`ask:${clientIp(request)}`, 15)) {
+    return Response.json(
+      { error: "Too many requests — wait a minute and try again." },
+      { status: 429 }
     )
   }
   const lang: Language = body.lang === "sw" ? "sw" : "en"

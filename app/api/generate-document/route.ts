@@ -9,6 +9,7 @@
 import { DOCUMENT_TITLES } from "@/lib/documents"
 import { generateGroundedDocument } from "@/lib/legal-generation"
 import { listVersions, saveGeneration } from "@/lib/legal-store"
+import { clientIp, rateLimit } from "@/lib/rate-limit"
 
 interface GenerateBody {
   docType?: string
@@ -33,6 +34,13 @@ export async function POST(request: Request) {
     )
   }
   const form: Record<string, string> = body.form ?? {}
+  // CPU-bound retrieval pipeline — cap abuse at 30 requests/minute/IP.
+  if (!rateLimit(`gen:${clientIp(request)}`, 30)) {
+    return Response.json(
+      { error: "Too many requests — wait a minute and try again." },
+      { status: 429 }
+    )
+  }
   const today =
     body.today ??
     new Date().toLocaleDateString("en-KE", {
