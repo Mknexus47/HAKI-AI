@@ -38,13 +38,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ### M2 — Design & Modelling (Ch.2) — DOCS DONE, SIGNATURE MISSING
 - DONE (evidence): real UI exists (reverse-engineer from it); DB schema exists (`supabase/schema.sql`: document_requests, documents, feedback, flagged_sessions, legal_sources, legal_provisions, document_generations, document_versions + RLS).
 - DONE (docs): `docs/02-chapter-two/chapter-two.md` — Mermaid use-case (Visitor/Member/Admin), Ask sequence, Generate sequence (steps 1–7), ERD from schema FKs, Ask + Generate flowcharts (§2.6/§2.7), 5 traced UI wireframes (§2.5). Screenshot assets in `docs/screenshots/`.
-- REMAINING: export Mermaid → PNG in draw.io if the department requires non-Mermaid figures (1:1 trace); get M2 sign-off.
+- DONE (PNG exports, 2026-11-01): all 6 Mermaid diagrams rendered to `docs/02-chapter-two/diagrams/fig-01.png`–`fig-06.png` (Kroki; fig-06 label quoted to fix a parser error). Linked per section in `chapter-two.md`; List of Figures note updated.
+- REMAINING: get M2 sign-off (draw.io re-trace only if the department rejects the PNGs).
 
 ### M3 — Dev & Testing Part I (Ch.3 start) — DOCS DONE, SIGNATURE MISSING
 - DONE (evidence): `lib/documents.ts` (fixed templates), `lib/legal-retrieval.ts`, `lib/legal-generation.ts` + `validateCitations`, `lib/pdf.ts`, `lib/docx.ts`, `lib/moderation.ts`, `scripts/test-grounding.ts`, `scripts/test-rag.ts`.
 - DONE (docs): `docs/03-chapter-three/test-report.md` updated 2026-10-28 — `typecheck` clean, `lint` 0 problems (ESLint pinned to ^9, commit `376132d`), `build` 53 routes, `test:grounding` + `test:rag` all pass, manual TC table incl. SEO + live-URL rows.
 - DONE (terminal/API evidence, 2026-10-29): `docs/03-chapter-three/terminal-evidence.md` — pasted outputs of typecheck, lint, test:grounding (all PASS), test:rag (all PASS), build (53 routes), plus TC-Ask-Out + TC-Ask-HighRisk via `POST /api/ask` (deterministic gates, no key needed). Appendix checklist terminal/refusal items ticked.
-- REMAINING: UI screenshots for TC-Gen, TC-Feedback, TC-Dashboard, Admin tab; phone check; get M3 sign-off.
+- DONE (UI screenshots, 2026-11-01, Playwright + crawler-UA gate bypass): TC-Gen end-to-end `12-tc-gen-form.png` → `13-tc-gen-result.png` → `tc-gen-salary-claim.pdf` (real PDF, 36 KB); feedback widget `14-tc-feedback-widget.png`; mobile-viewport `15-mobile-ask.png`, `16-mobile-generator.png`, `17-mobile-ask-sources.png`. Gate verified: anonymous human UA → `/login`, Googlebot UA passes.
+- REMAINING: TC-Feedback DB row, TC-Dashboard save/resume/delete flow, Admin tab — all need a signed-in session (email confirmation is ON in Supabase, no test account has a session); physical-phone check of `/ask` + one generator; get M3 sign-off.
 
 ### M4 — Dev, Testing & DB Integration Part II — LIVE DB VERIFIED, DEMO LEFT
 - DONE (evidence): `lib/supabase-client.ts`, `lib/supabase-server.ts`, `supabase/migrations/20260925235900_haki_ai_mvp_schema.sql`, `20261012000000_legal_grounding.sql`; RLS policies in schema; dashboard (`app/dashboard/page.tsx`), drafts save/resume, admin tab (`components/dashboard/AdminPanel.tsx`).
@@ -56,11 +58,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - DONE (evidence): live URL **verified 2026-10-28** (home renders at `https://haki-ai.vercel.app`); `netlify.toml` fixed (removed wrong `publish = ".next"`; now `@netlify/plugin-nextjs` fallback, Vercel is production); PWA `public/manifest.json` + `sw.js`; offline page `app/offline/page.tsx`.
 - DONE (docs): preliminary pages drafted — `docs/00-preliminary/preliminary-pages.md` (cover, declaration, dedication, acknowledgement, abstract, TOC, list of figures, list of tables, abbreviations).
 - DONE (CI, 2026-10-29): `.github/workflows/deploy.yml` — verify job (typecheck + lint) then Vercel production deploy on push to main; org/project IDs match `.vercel/project.json`. LIVE: `VERCEL_TOKEN` repo secret set, pushes to `Mknexus47/HAKI-AI` auto-deploy (runs 40869794241, 40870111036 green; actions bumped to checkout/setup-node v5).
-- REMAINING: replace `[bracketed]` student/supervisor placeholders; check `/ask` + one generator on a phone; print/bind to department template; get M5 sign-off.
+- DONE (mobile check support, 2026-11-01): mobile-viewport captures `docs/screenshots/15-mobile-ask.png` (grounded Q&A), `16-mobile-generator.png`, `17-mobile-ask-sources.png` (source chips + feedback).
+- REMAINING: replace `[bracketed]` student/supervisor placeholders in `docs/00-preliminary/preliminary-pages.md` (needs Full Name / Adm. No. / Programme / Supervisor); physical-phone check of `/ask` + one generator on the live URL; print/bind to department template; get M5 sign-off.
 
 ### M6 — Documentation Consolidation (Ch.4 + refs) — DOCS DONE, APPENDIX LEFT
 - DONE (docs): `docs/04-chapter-four/chapter-four-refs-prelim.md` (summary, conclusions vs 5 objectives, limitations — lint/netlify items marked resolved, recommendations); `docs/04-chapter-four/references.md` (APA 7: legislation + books + reports + software docs); `docs/04-chapter-four/appendix-checklist.md` created.
-- REMAINING: tick off remaining appendix items (TC-Gen/Feedback/Dashboard/Admin UI screenshots, Supabase Table Editor rows, phone check); the terminal-output items are done (`docs/03-chapter-three/terminal-evidence.md`). Scan Supervision Form M1–M6 (6 signatures = 50% of marking). Final supervisor sign before panel.
+- REMAINING: signed-in captures (TC-Feedback row, TC-Dashboard flow + Table Editor rows, Admin tab), physical-phone check, and opening `tc-gen-salary-claim.pdf` to tick the TC-Gen box; `supabase/sql/sync-dataset-2026-10-20.sql` still needs a manual run in the Supabase SQL editor (admin-write RLS blocks the publishable key). Scan Supervision Form M1–M6 (6 signatures = 50% of marking). Final supervisor sign before panel.
 
 ## Rules for any agent working here
 1. Never delete/rebuild `app/`, `lib/`, `supabase/`. Docs go in NEW `docs/` folder only.

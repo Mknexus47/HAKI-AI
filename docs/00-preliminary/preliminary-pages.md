@@ -85,9 +85,9 @@ Access to basic legal information in Kenya is limited by cost, language, and awa
 | 2.7–2.11 | UI wireframes: Home, Ask, Generator form, PDF output, Dashboard | Chapter 2 §2.5 |
 | 1.1 | Gantt chart (Wk1–Wk12) | Chapter 1 §1.6 (`gantt.csv`) |
 | A.1 | Architecture diagram | `docs/screenshots/00-architecture.png` |
-| A.2–A.12 | Application screenshots (Home, Ask EN/SW, Generator, Salary claim, OCR, Clauses, Sources, Legal Aid, Dashboard, sample contract) | Appendix A |
+| A.2–A.17 | Application screenshots (Home, Ask EN/SW, Generator, Salary claim, OCR, Clauses, Sources, Legal Aid, Dashboard, sample contract, TC-Gen form/result, feedback widget, mobile Ask/generator/sources) + generated sample PDF | Appendix A |
 
-*(Mermaid blocks in `chapter-two.md` render on GitHub; for Word, export each as PNG/SVG from draw.io or the GitHub Mermaid preview and paste above.)*
+*(PNG exports of figures 2.1–2.6 already exist: `docs/02-chapter-two/diagrams/fig-01.png` – `fig-06.png` (rendered 2026-11-01) — paste them directly into Word; no draw.io export needed unless the department requires it.)*
 
 ---
 

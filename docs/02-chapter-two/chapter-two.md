@@ -1,6 +1,6 @@
 # HAKI AI — Chapter Two: Design & Modelling (DSE 315 Milestone M2)
 
-> Reverse-engineered FROM the shipped UI (`app/`), pipeline (`lib/legal-retrieval.ts`, `lib/legal-generation.ts`), and schema (`supabase/schema.sql`). Draw.io / dbdiagram.io versions can be traced 1:1 from the Mermaid below.
+> Reverse-engineered FROM the shipped UI (`app/`), pipeline (`lib/legal-retrieval.ts`, `lib/legal-generation.ts`), and schema (`supabase/schema.sql`). Draw.io / dbdiagram.io versions can be traced 1:1 from the Mermaid below. **PNG exports for binding: `diagrams/fig-01.png` – `diagrams/fig-06.png` (rendered 2026-11-01).**
 
 ## 2.1 Use-Case Diagram (Actors: Visitor, Member, Admin)
 
@@ -25,6 +25,8 @@ flowchart LR
   Admin --> UC9[Review feedback + generations]
   Admin --> UC10[Maintain legal_sources versions]
 ```
+
+PNG export: [`diagrams/fig-01.png`](diagrams/fig-01.png) — Figure 2.1, use-case diagram.
 
 Evidence: `app/ask`, `app/legal-sources`, `app/legal-aid`, `app/generate-*/`, `app/dashboard` (drafts/history/feedback), `app/admin` (flagged_sessions), RLS admin = `michaelkariuki281@gmail.com` (`supabase/schema.sql`).
 
@@ -51,6 +53,8 @@ sequenceDiagram
     end
   end
 ```
+
+PNG export: [`diagrams/fig-02.png`](diagrams/fig-02.png) — Figure 2.2, Ask sequence.
 
 Evidence: `lib/chat.ts: TOPICS`, `SCOPE_ANSWER` (six areas: Tenant, Employment, Consumer, Debt, Business Agreements, Complaint Letters); `lib/i18n.ts` scope disclaimer; `lib/moderation.ts`.
 
@@ -80,6 +84,8 @@ sequenceDiagram
   API-->>F: paragraphs + sources
   F->>P: downloadPdf / downloadDocx (+ brand logo, fail-safe)
 ```
+
+PNG export: [`diagrams/fig-03.png`](diagrams/fig-03.png) — Figure 2.3, Generate sequence (steps 1–7).
 
 Evidence: `lib/legal-retrieval.ts:1-15` (steps 1–5 comments), `lib/legal-generation.ts:1-16` (steps 6–7), `lib/documents.ts: buildParagraphsForDoc`, `scripts/test-grounding.ts` (retrieval sufficient, citation validation, fabricated Section 99 / invented case law rejected).
 
@@ -157,6 +163,8 @@ erDiagram
 
 RLS: drafts/documents/generations owner-only; `legal_sources`/`legal_provisions` public read + admin write; `flagged_sessions`/`feedback` admin select (`supabase/schema.sql:60-99`, `167-204`).
 
+PNG export: [`diagrams/fig-04.png`](diagrams/fig-04.png) — Figure 2.4, ERD.
+
 ## 2.5 UI Wireframes (traced from live pages — screenshot then box-trace in draw.io)
 
 1. **Home (`/`)**: header (logo `public/logo-icon.jpg` + EN/SW toggle + login) → hero (HAKI AI + disclaimer banner) → 6-area cards → 9-generator grid → Legal Aid CTA → footer (Gold #C9A227 Contact button).
@@ -186,6 +194,8 @@ flowchart TD
   J --> K([End])
 ```
 
+PNG export: [`diagrams/fig-05.png`](diagrams/fig-05.png) — Figure 2.5, Ask flowchart.
+
 Evidence: `lib/moderation.ts` (gate order), `lib/chat.ts` (`TOPICS`, `SCOPE_ANSWER`, greeting branch), `lib/i18n.ts`, `app/ask/page.tsx` (feedback widget).
 
 ## 2.7 Flowchart — Generate flow (steps 1–7)
@@ -196,7 +206,7 @@ flowchart TD
   B --> C[POST /api/generate-document<br/>docType + form]
   C --> D[Step 1: identify doc type + legal issues<br/>lib/legal-retrieval.ts identifyLegalIssues]
   D --> E[Step 2: applicable law - Gate 1 authority,<br/>Gate 2 temporal, Gate 3 docType allowlist]
-  E --> F[Step 3: keyword + semantic (trigram) search<br/>keyword overlap required - semantic-only never cited]
+  E -->   F["Step 3: keyword + semantic (trigram) search<br/>keyword overlap required - semantic-only never cited"]
   F --> G[Step 4: retrieve top-3 evidence]
   G --> H[Step 5: sufficiency decision<br/>sufficient? limitationNotice otherwise]
   H --> I[Step 6: generate from fixed template<br/>lib/documents.ts + evidence only - lib/legal-generation.ts]
@@ -212,5 +222,7 @@ flowchart TD
   P --> R([End])
   Q --> R
 ```
+
+PNG export: [`diagrams/fig-06.png`](diagrams/fig-06.png) — Figure 2.6, Generate flowchart.
 
 Evidence: `lib/legal-retrieval.ts:1-15` (steps 1–5), `lib/legal-generation.ts:1-16` (steps 6–7 + `validateCitations`), `lib/documents.ts: buildParagraphsForDoc`, `app/api/generate-document/route.ts` (DB writes), `lib/pdf.ts`, `lib/docx.ts`, `scripts/test-grounding.ts`.

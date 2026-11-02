@@ -18,20 +18,28 @@ Existing captures in `docs/screenshots/`:
 - [x] `10-legal-aid.png` — Legal Aid Directory
 - [x] `11-dashboard.png` — Dashboard (drafts/history)
 - [x] `sample-contract.png` — sample contract used for OCR test
+- [x] `12-tc-gen-form.png` — TC-Gen step 1: filled salary-claim form + live preview + draft saved (2026-11-01)
+- [x] `13-tc-gen-result.png` — TC-Gen step 2: generation success + verified legal references (2026-11-01)
+- [x] `tc-gen-salary-claim.pdf` — TC-Gen step 3: the actual PDF produced end-to-end (2026-11-01)
+- [x] `14-tc-feedback-widget.png` — feedback widget, negative path with reason chips + comment box (2026-11-01)
+- [x] `15-mobile-ask.png` — mobile viewport: Ask question + grounded answer (2026-11-01)
+- [x] `16-mobile-generator.png` — mobile viewport: salary-claim generator (2026-11-01)
+- [x] `17-mobile-ask-sources.png` — mobile viewport: Kenya Law source chips + feedback widget (2026-11-01)
+- [x] Ch.2 diagram PNG exports for binding — `docs/02-chapter-two/diagrams/fig-01.png` … `fig-06.png` (use-case, Ask sequence, Generate sequence, ERD, Ask flowchart, Generate flowchart; rendered 2026-11-01)
 
 Still to capture (paste terminal output or DevTools screenshot):
 
 - [x] TC-Ask-Out — out-of-scope refusal + Legal Aid redirect (2026-10-29: `docs/03-chapter-three/terminal-evidence.md` §A.6 — `POST /api/ask` returns `reason: "out-of-scope"`)
 - [x] TC-Ask-HighRisk — moderation refusal (2026-10-29: `docs/03-chapter-three/terminal-evidence.md` §A.6 — `reason: "high-risk"`)
-- [ ] TC-Gen — one full generator run end-to-end (form → preview → PDF opened)
-- [ ] TC-Feedback — feedback row in Supabase Table Editor
-- [ ] TC-Dashboard — save draft → reload → resume → delete, plus Table Editor rows in `document_requests` / `document_generations` / `document_versions` (doubles as M4 proof)
-- [ ] Admin tab — `/dashboard?tab=admin` showing flagged sessions/feedback
+- [ ] TC-Gen — one full generator run end-to-end (form → preview → PDF opened) — *UI steps captured 2026-11-01 (`12`/`13` + `tc-gen-salary-claim.pdf`); tick after opening the PDF on your machine*
+- [ ] TC-Feedback — feedback row in Supabase Table Editor — *widget UI captured (`14`); the DB row needs a signed-in run: sign in → click thumbs → Supabase Table Editor → `feedback`*
+- [ ] TC-Dashboard — save draft → reload → resume → delete, plus Table Editor rows in `document_requests` / `document_generations` / `document_versions` (doubles as M4 proof) — *needs a signed-in session*
+- [ ] Admin tab — `/dashboard?tab=admin` showing flagged sessions/feedback — *needs the admin (`michaelkariuki281@gmail.com`) session*
 - [x] Terminal: `npm run typecheck` (clean) — `docs/03-chapter-three/terminal-evidence.md` §A.1
 - [x] Terminal: `npm run lint` (0 problems) — §A.2
 - [x] Terminal: `npm run build` (53 routes) — §A.5
 - [x] Terminal: `npm run test:grounding` + `npm run test:rag` (all pass) — §A.3/§A.4
-- [ ] Phone: https://haki-ai.vercel.app `/ask` + one generator working on mobile (M5)
+- [ ] Phone: https://haki-ai.vercel.app `/ask` + one generator working on mobile (M5) — *mobile-viewport captures exist (`15`/`16`/`17`); tick after testing on a physical phone against the live URL*
 
 ## Appendix B — Supervision Form scans (50% of marking)
 
