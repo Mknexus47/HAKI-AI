@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
-import { SITE_URL } from "./site";
+import type { Metadata } from "next"
+import { SITE_URL } from "./site"
 
-const OG_IMAGE = "/logo-icon.jpg";
+const OG_IMAGE = "/og-cover.png"
 
 // Per-page metadata with canonical + social tags. Used by server pages
 // directly and by the tiny layout.tsx files of client pages.
@@ -11,8 +11,8 @@ export function pageMetadata(
   path: string,
   options?: { noindex?: boolean; priorityType?: "website" | "article" }
 ): Metadata {
-  const fullTitle = `${title} | HAKI AI`;
-  const url = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
+  const fullTitle = `${title} | HAKI AI`
+  const url = path === "/" ? SITE_URL : `${SITE_URL}${path}`
   return {
     title,
     description,
@@ -24,7 +24,7 @@ export function pageMetadata(
       url,
       siteName: "HAKI AI",
       type: options?.priorityType ?? "website",
-      images: [{ url: OG_IMAGE, width: 512, height: 512, alt: "HAKI AI" }],
+      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "HAKI AI" }],
     },
     twitter: {
       card: "summary_large_image",
@@ -32,7 +32,7 @@ export function pageMetadata(
       description,
       images: [OG_IMAGE],
     },
-  };
+  }
 }
 
 // JSON-LD structured data for search results (site name, links, org info).
@@ -56,5 +56,5 @@ export function websiteJsonLd() {
         sameAs: [],
       },
     ],
-  };
+  }
 }
