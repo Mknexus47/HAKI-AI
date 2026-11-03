@@ -34,6 +34,7 @@ export default function LoginPage() {
   }, []);
 
   const signupHref = buildSignupHref(email, nextPath);
+  const nextIsAdmin = nextPath.includes("/dashboard?tab=admin");
 
   const handleGoogle = async () => {
     setError(null);
@@ -105,8 +106,12 @@ export default function LoginPage() {
         </h1>
         <p className="mt-3 text-slate-600">
           {step === "email"
-            ? "Enter your email to continue — new here? Create your account next."
-            : `Signing in as ${email}`}
+            ? nextIsAdmin
+              ? "Enter your admin email — you'll continue to the admin panel after sign-in."
+              : "Enter your email to continue — new here? Create your account next."
+            : nextIsAdmin
+              ? `Signing in as ${email} — continues to the admin panel`
+              : `Signing in as ${email}`}
         </p>
 
         <div className="card-gradient mt-8 rounded-xl border p-8 shadow-sm">
@@ -230,16 +235,18 @@ export default function LoginPage() {
           </Button>
         </div>
 
-        {/* Admin shortcut — routes through the same sign-in gate; only the
-            configured admin email sees live data (RLS + AdminPanel check). */}
+        {/* Admin shortcut. Plain <a> on purpose: client-side routing back to
+            /login doesn't remount this page, so the mount-time query read
+            would miss ?next= — a full page load keeps it in sync. Access is
+            still gated by the admin email (RLS + AdminPanel check). */}
         <p className="mt-6 text-center text-sm text-slate-500">
-          <Link
+          <a
             href="/dashboard?tab=admin"
             className="inline-flex items-center gap-1.5 font-medium text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline"
           >
             <ShieldCheck className="h-4 w-4" aria-hidden="true" />
             Admin
-          </Link>
+          </a>
         </p>
       </div>
     </PageShell>
