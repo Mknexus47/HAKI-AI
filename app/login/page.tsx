@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, LogIn, UserPlus } from "lucide-react";
+import { ArrowRight, LogIn, ShieldCheck, UserPlus } from "lucide-react";
 import { GoogleIcon } from "@/components/ui/google-icon";
 import { Button } from "@/components/ui/button";
 import PageShell from "@/components/layout/PageShell";
@@ -229,6 +229,18 @@ export default function LoginPage() {
             {googleLoading ? "Redirecting..." : "Continue with Google"}
           </Button>
         </div>
+
+        {/* Admin shortcut — routes through the same sign-in gate; only the
+            configured admin email sees live data (RLS + AdminPanel check). */}
+        <p className="mt-6 text-center text-sm text-slate-500">
+          <Link
+            href="/dashboard?tab=admin"
+            className="inline-flex items-center gap-1.5 font-medium text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline"
+          >
+            <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+            Admin
+          </Link>
+        </p>
       </div>
     </PageShell>
   );
