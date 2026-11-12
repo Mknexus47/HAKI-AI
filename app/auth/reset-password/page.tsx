@@ -12,7 +12,8 @@ const inputClassName =
   "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ring";
 const labelClassName = "mb-1.5 block text-sm font-medium text-slate-700";
 
-const LINK_INVALID = "Invalid or expired link.";
+const LINK_INVALID =
+  "This reset link has expired, was already used, or was opened on a different device. Request a new link below and open it right away on the same device you used to request it.";
 
 function friendlyTokenError(description: string | null): string {
   if (!description) return LINK_INVALID;

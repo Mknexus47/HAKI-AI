@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
         <h1 className="text-3xl font-bold text-slate-900">Reset password</h1>
         <p className="mt-3 text-slate-600">
           {sent
-            ? "Check your email for a reset link. Open it on this device to choose a new password."
+            ? "Check your email for a reset link. Open it right away on this device — links expire quickly."
             : "Enter the email address linked to your HAKI AI account and we'll send you a reset link."}
         </p>
 
