@@ -3,6 +3,7 @@ import Link from "next/link";
 const footerLinks = [
   { href: "/legal-aid", label: "Legal Aid Directory" },
   { href: "/dashboard", label: "My Dashboard" },
+  { href: "/faq", label: "FAQ" },
   { href: "/privacy-policy", label: "Privacy Policy" },
   { href: "/terms-of-service", label: "Terms of Service" },
   { href: "/contact", label: "Contact Support" },

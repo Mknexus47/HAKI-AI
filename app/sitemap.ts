@@ -16,6 +16,7 @@ const STATIC_PAGES: MetadataRoute.Sitemap = [
   ["/features", 0.6],
   ["/blog", 0.6],
   ["/contact", 0.5],
+  ["/faq", 0.6],
   ["/privacy", 0.3],
   ["/privacy-policy", 0.3],
   ["/terms", 0.3],

@@ -202,3 +202,23 @@ create policy "versions_insert_own" on public.document_versions
       where g.id = document_versions.generation_id and g.user_id = auth.uid()
     )
   );
+
+-- ============================================================
+-- 9. FAQ content (admin-managed, published entries publicly readable)
+-- ============================================================
+create table if not exists public.faq_entries (
+  id uuid primary key default gen_random_uuid(),
+  question text not null,
+  answer text not null,
+  category text not null default 'General',
+  position int not null default 0,
+  published boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+alter table public.faq_entries enable row level security;
+create policy "faq_public_read" on public.faq_entries
+  for select using (published = true);
+create policy "faq_admin_all" on public.faq_entries
+  for all using ((select auth.jwt() ->> 'email') = 'michaelkariuki281@gmail.com')
+  with check ((select auth.jwt() ->> 'email') = 'michaelkariuki281@gmail.com');
