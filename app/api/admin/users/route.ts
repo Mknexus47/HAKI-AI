@@ -94,7 +94,7 @@ export async function POST(request: Request) {
       : 7
   const update =
     body.action === "ban"
-      ? { ban_duration: `${days}d` }
+      ? { ban_duration: `${days * 24}h` }
       : { ban_duration: "none" }
   const { error } = await admin.auth.admin.updateUserById(body.userId, update)
   if (error) {
