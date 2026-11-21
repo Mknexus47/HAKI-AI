@@ -7,6 +7,15 @@ import { ADMIN_EMAIL } from "@/lib/legal-store"
 
 export const dynamic = "force-dynamic"
 
+const NO_STORE = { "Cache-Control": "no-store, max-age=0" }
+
+function noStoreJson(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { ...NO_STORE, "Content-Type": "application/json" },
+  })
+}
+
 interface AdminUser {
   id: string
   email: string
@@ -34,13 +43,13 @@ function serviceClient() {
 
 export async function GET() {
   if (!(await requireAdmin())) {
-    return Response.json({ error: "Admin access required." }, { status: 403 })
+    return noStoreJson({ error: "Admin access required." }, 403)
   }
   const admin = serviceClient()
   if (!admin) {
-    return Response.json(
+    return noStoreJson(
       { error: "Service key not configured on the server." },
-      { status: 503 }
+      503
     )
   }
   const { data, error } = await admin.auth.admin.listUsers({
@@ -48,7 +57,7 @@ export async function GET() {
     perPage: 200,
   })
   if (error) {
-    return Response.json({ error: error.message }, { status: 502 })
+    return noStoreJson({ error: error.message }, 502)
   }
   const users: AdminUser[] = data.users.map((user) => ({
     id: user.id,
@@ -59,33 +68,33 @@ export async function GET() {
       ? new Date(user.banned_until).getTime() > Date.now()
       : false,
   }))
-  return Response.json({ users, total: data.total ?? users.length })
+  return noStoreJson({ users, total: data.total ?? users.length })
 }
 
 export async function POST(request: Request) {
   if (!(await requireAdmin())) {
-    return Response.json({ error: "Admin access required." }, { status: 403 })
+    return noStoreJson({ error: "Admin access required." }, 403)
   }
   let body: { userId?: string; action?: string; days?: number }
   try {
     body = (await request.json()) as typeof body
   } catch {
-    return Response.json({ error: "Invalid JSON body." }, { status: 400 })
+    return noStoreJson({ error: "Invalid JSON body." }, 400)
   }
   if (!body.userId || typeof body.userId !== "string") {
-    return Response.json({ error: "userId is required." }, { status: 400 })
+    return noStoreJson({ error: "userId is required." }, 400)
   }
   if (body.action !== "ban" && body.action !== "unban") {
-    return Response.json(
+    return noStoreJson(
       { error: 'action must be "ban" or "unban".' },
-      { status: 400 }
+      400
     )
   }
   const admin = serviceClient()
   if (!admin) {
-    return Response.json(
+    return noStoreJson(
       { error: "Service key not configured on the server." },
-      { status: 503 }
+      503
     )
   }
   const days =
@@ -98,7 +107,7 @@ export async function POST(request: Request) {
       : { ban_duration: "none" }
   const { error } = await admin.auth.admin.updateUserById(body.userId, update)
   if (error) {
-    return Response.json({ error: error.message }, { status: 502 })
+    return noStoreJson({ error: error.message }, 502)
   }
-  return Response.json({ ok: true, action: body.action })
+  return noStoreJson({ ok: true, action: body.action })
 }

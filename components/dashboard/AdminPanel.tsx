@@ -113,7 +113,7 @@ export default function AdminPanel() {
   const [faqIsNew, setFaqIsNew] = React.useState(false)
 
   const loadUsers = React.useCallback(async () => {
-    const res = await fetch("/api/admin/users")
+    const res = await fetch("/api/admin/users", { cache: "no-store" })
     const json = await res.json().catch(() => null)
     if (!res.ok) {
       setUsersError(json?.error ?? `Failed to load users (HTTP ${res.status}).`)
