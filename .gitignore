@@ -7,3 +7,4 @@
 .vercel
 .env*
 .expo/
+__pycache__/
