@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import RateUs from "@/components/ui/rate-us";
+
 const footerLinks = [
   { href: "/legal-aid", label: "Legal Aid Directory" },
   { href: "/dashboard", label: "My Dashboard" },
@@ -21,17 +23,20 @@ export default function Footer() {
             </p>
           </div>
 
-          <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
-            {footerLinks.map((link) => (
-              <Link
-                key={link.href + link.label}
-                href={link.href}
-                className="text-slate-300 transition-colors hover:text-white"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <div className="flex flex-col gap-6 md:items-end">
+            <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
+              {footerLinks.map((link) => (
+                <Link
+                  key={link.href + link.label}
+                  href={link.href}
+                  className="text-slate-300 transition-colors hover:text-white"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+            <RateUs />
+          </div>
         </div>
 
         <div className="mt-10 border-t border-slate-800 pt-6 text-sm text-slate-500">

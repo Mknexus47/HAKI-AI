@@ -13,6 +13,7 @@ import {
   Trash2,
   Ban,
   ShieldCheck,
+  Star,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase-client"
@@ -35,6 +36,14 @@ interface FeedbackRow {
   helpful: boolean
   reason: string | null
   comment: string | null
+  created_at: string
+}
+
+interface RatingRow {
+  id: string
+  rating: number
+  comment: string | null
+  page: string
   created_at: string
 }
 
@@ -90,6 +99,8 @@ export default function AdminPanel() {
   const [isAdmin, setIsAdmin] = React.useState(false)
   const [flags, setFlags] = React.useState<FlaggedRow[]>([])
   const [feedback, setFeedback] = React.useState<FeedbackRow[]>([])
+  const [ratings, setRatings] = React.useState<RatingRow[]>([])
+  const [ratingsError, setRatingsError] = React.useState<string | null>(null)
   const [generations, setGenerations] = React.useState<GenerationRow[]>([])
   const [genCount, setGenCount] = React.useState<number | null>(null)
   const [sources, setSources] = React.useState<SourceRow[]>([])
@@ -135,8 +146,16 @@ export default function AdminPanel() {
       setIsAdmin(admin)
       setLiveReady(true)
       if (!admin) return
-      const [flagRows, feedbackRows, genRows, genCountRes, sourceRows, provRows, faqRows] =
-        await Promise.all([
+      const [
+        flagRows,
+        feedbackRows,
+        ratingRows,
+        genRows,
+        genCountRes,
+        sourceRows,
+        provRows,
+        faqRows,
+      ] = await Promise.all([
           supabase
             .from("flagged_sessions")
             .select("id, reason, snippet, flag_count, status, created_at")
@@ -147,6 +166,11 @@ export default function AdminPanel() {
             .select("id, context, helpful, reason, comment, created_at")
             .order("created_at", { ascending: false })
             .limit(25),
+          supabase
+            .from("ratings")
+            .select("id, rating, comment, page, created_at")
+            .order("created_at", { ascending: false })
+            .limit(50),
           supabase
             .from("document_generations")
             .select("id, user_id, doc_type, validation_status, created_at")
@@ -171,6 +195,13 @@ export default function AdminPanel() {
       if (cancelled) return
       setFlags((flagRows.data as FlaggedRow[]) ?? [])
       setFeedback((feedbackRows.data as FeedbackRow[]) ?? [])
+      if (ratingRows.error) {
+        setRatings([])
+        setRatingsError("Ratings table not available yet.")
+      } else {
+        setRatings((ratingRows.data as RatingRow[]) ?? [])
+        setRatingsError(null)
+      }
       setGenerations((genRows.data as GenerationRow[]) ?? [])
       if (!genCountRes.error) setGenCount(genCountRes.count ?? 0)
       setSources((sourceRows.data as SourceRow[]) ?? [])
@@ -405,6 +436,12 @@ export default function AdminPanel() {
     },
   ]
 
+  const ratingAverage = ratings.length
+    ? (
+        ratings.reduce((total, row) => total + row.rating, 0) / ratings.length
+      ).toFixed(1)
+    : null
+
   const sourceTitle = (id: string) =>
     sources.find((row) => row.id === id)?.title ?? id
   const userEmail = (id: string) =>
@@ -561,10 +598,75 @@ export default function AdminPanel() {
             <li>Review generated documents</li>
             <li>Review flagged sessions (Review / Dismiss)</li>
             <li>Review user feedback</li>
+            <li>Review user ratings</li>
             <li>Manage FAQ content</li>
             <li>Disable abusive users (ban / unban)</li>
           </ul>
         </div>
+      </div>
+
+      <div className={`${cardClassName} mt-8`}>
+        <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-slate-900">
+          <Star className="h-4 w-4 text-[#e5342b]" aria-hidden="true" />
+          Ratings
+        </h2>
+        <p className="mb-4 text-sm text-slate-500">
+          Real “Rate us” submissions from the site footer.
+        </p>
+        {ratingsError ? (
+          <p className="text-sm text-red-600">{ratingsError}</p>
+        ) : ratings.length === 0 ? (
+          <p className="text-sm text-slate-500">No ratings yet.</p>
+        ) : (
+          <>
+            <div className="mb-4 flex items-center gap-3">
+              <span className="text-3xl font-bold text-slate-900">
+                {ratingAverage}
+              </span>
+              <span className="text-sm text-slate-500">out of 5</span>
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+                {ratings.length} rating{ratings.length === 1 ? "" : "s"}
+              </span>
+            </div>
+            <div className="max-h-80 space-y-2 overflow-y-auto">
+              {ratings.map((row) => (
+                <div
+                  key={row.id}
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className="flex"
+                      aria-label={`${row.rating} out of 5 stars`}
+                    >
+                      {Array.from({ length: 5 }).map((_, index) => (
+                        <Star
+                          key={index}
+                          className={`h-3.5 w-3.5 ${
+                            index < row.rating
+                              ? "text-amber-400"
+                              : "text-slate-300"
+                          }`}
+                          fill={
+                            index < row.rating ? "currentColor" : "none"
+                          }
+                          aria-hidden="true"
+                        />
+                      ))}
+                    </span>
+                    <span className="text-xs text-slate-500">{row.page}</span>
+                    <span className="text-xs text-slate-400">
+                      {new Date(row.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                  {row.comment ? (
+                    <p className="mt-1 text-xs text-slate-600">{row.comment}</p>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       <div className={`${cardClassName} mt-8`}>

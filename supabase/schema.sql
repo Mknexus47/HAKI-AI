@@ -41,6 +41,15 @@ create table if not exists public.feedback (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.ratings (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users on delete set null,
+  rating smallint not null check (rating between 1 and 5),
+  comment text check (char_length(comment) <= 500),
+  page text not null default '/',
+  created_at timestamptz not null default now()
+);
+
 -- ============================================================
 -- 7. Admin moderation queue
 -- ============================================================
@@ -60,6 +69,7 @@ create table if not exists public.flagged_sessions (
 alter table public.document_requests enable row level security;
 alter table public.documents enable row level security;
 alter table public.feedback enable row level security;
+alter table public.ratings enable row level security;
 alter table public.flagged_sessions enable row level security;
 
 -- document_requests: owner only
@@ -87,6 +97,13 @@ create policy "feedback_insert" on public.feedback
   for insert with check (user_id is null or auth.uid() = user_id);
 create policy "feedback_admin" on public.feedback
   for select using ((select auth.jwt() ->> 'email') = 'michaelkariuki281@gmail.com');
+
+-- ratings: anyone can insert their own; admin reviews and moderates
+create policy "ratings_insert" on public.ratings
+  for insert with check (user_id is null or auth.uid() = user_id);
+create policy "ratings_admin_all" on public.ratings
+  for all using ((select auth.jwt() ->> 'email') = 'michaelkariuki281@gmail.com')
+  with check ((select auth.jwt() ->> 'email') = 'michaelkariuki281@gmail.com');
 
 -- flagged_sessions: clients can only flag themselves/anonymous; admin reviews
 create policy "flag_insert" on public.flagged_sessions
