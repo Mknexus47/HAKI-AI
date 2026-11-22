@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, LogIn, ShieldCheck, UserPlus } from "lucide-react";
 import { GoogleIcon } from "@/components/ui/google-icon";
 import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/ui/password-input";
 import PageShell from "@/components/layout/PageShell";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase-client";
 import { buildSignupHref, safeNextPath } from "@/lib/auth-redirect";
@@ -107,8 +108,8 @@ export default function LoginPage() {
         <p className="mt-3 text-slate-600">
           {step === "email"
             ? nextIsAdmin
-              ? "Enter your admin email — you'll continue to the admin panel after sign-in."
-              : "Enter your email to continue — new here? Create your account next."
+              ? "Enter your admin email — you'll enter your password next, then continue to the admin panel."
+              : "Enter your email to continue — you'll enter your password on the next step."
             : nextIsAdmin
               ? `Signing in as ${email} — continues to the admin panel`
               : `Signing in as ${email}`}
@@ -167,10 +168,9 @@ export default function LoginPage() {
                 <label htmlFor="login-password" className={labelClassName}>
                   Password
                 </label>
-                <input
+                <PasswordInput
                   id="login-password"
                   name="password"
-                  type="password"
                   required
                   autoComplete="current-password"
                   autoFocus

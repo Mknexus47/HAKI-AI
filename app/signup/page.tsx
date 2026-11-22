@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { UserPlus } from "lucide-react";
 import { GoogleIcon } from "@/components/ui/google-icon";
 import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/ui/password-input";
 import PageShell from "@/components/layout/PageShell";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase-client";
 import { safeNextPath } from "@/lib/auth-redirect";
@@ -161,10 +162,9 @@ export default function SignupPage() {
               <label htmlFor="signup-password" className={labelClassName}>
                 Password
               </label>
-              <input
+              <PasswordInput
                 id="signup-password"
                 name="password"
-                type="password"
                 required
                 minLength={8}
                 autoComplete="new-password"

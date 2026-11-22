@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AlertCircle, KeyRound, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/ui/password-input";
 import PageShell from "@/components/layout/PageShell";
 import { createClient } from "@/lib/supabase-client";
 
@@ -193,10 +194,9 @@ export default function ResetPasswordPage() {
                   <label htmlFor="reset-password" className={labelClassName}>
                     New password
                   </label>
-                  <input
+                  <PasswordInput
                     id="reset-password"
                     name="password"
-                    type="password"
                     required
                     minLength={6}
                     autoComplete="new-password"
@@ -207,10 +207,9 @@ export default function ResetPasswordPage() {
                   <label htmlFor="reset-confirm" className={labelClassName}>
                     Confirm new password
                   </label>
-                  <input
+                  <PasswordInput
                     id="reset-confirm"
                     name="confirm"
-                    type="password"
                     required
                     minLength={6}
                     autoComplete="new-password"
