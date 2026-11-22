@@ -2,6 +2,16 @@ import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "haki-ai-virid.vercel.app" }],
+        destination: "https://haki-ai.vercel.app/:path*",
+        permanent: false,
+      },
+    ]
+  },
   async headers() {
     return [
       {
